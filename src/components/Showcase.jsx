@@ -82,7 +82,14 @@ export default function Showcase() {
                 <article key={p.name} className="project-card">
                   <h3>{p.name}</h3>
                   <p>{p.blurb}</p>
-                  <span className="project-tag mono">{p.tag}</span>
+                  <a
+                    className="project-link mono"
+                    href={p.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    → {p.repo}
+                  </a>
                 </article>
               ))}
             </div>
@@ -92,7 +99,7 @@ export default function Showcase() {
           <div className="panel">
             <div className="panel-head">
               <span className="section-label">Off the clock</span>
-              <h2 className="panel-title display">Faud.</h2>
+              <h2 className="panel-title display">FAUD.</h2>
             </div>
             {foodPics.length ? (
               <div className="food-grid">

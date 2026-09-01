@@ -76,40 +76,56 @@
 /* projects */
 .project-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-content: center;
   gap: 16px;
-  max-width: 720px;
+  max-width: 1080px;
 }
 
 .project-card {
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
   background: var(--glass-fill);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  padding: 20px;
+  padding: 18px;
 }
 
 .project-card h3 {
   font-family: 'Bricolage Grotesque', sans-serif;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 15px;
+  line-height: 1.25;
   margin: 0 0 8px;
   color: var(--text);
 }
 
 .project-card p {
-  font-size: 12.5px;
-  line-height: 1.6;
+  font-size: 12px;
+  line-height: 1.55;
   color: var(--text-dim);
   margin: 0 0 14px;
+  /* keep every card the same height in the grid */
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.project-tag {
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+.project-link {
+  margin-top: auto;
+  font-size: 10.5px;
   color: var(--text-faint);
+  word-break: break-all;
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.project-link:hover {
+  color: var(--text);
+  border-color: var(--text-faint);
 }
 
 /* food */
@@ -152,6 +168,16 @@
   color: var(--silver);
 }
 
+@media (max-width: 1024px) {
+  .project-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 640px;
+  }
+  .project-card p {
+    -webkit-line-clamp: 4;
+  }
+}
+
 @media (max-width: 640px) {
   .panel {
     padding: 88px 22px;
@@ -159,6 +185,7 @@
   }
   .project-grid {
     grid-template-columns: 1fr;
+    max-width: 420px;
   }
   .food-grid {
     grid-template-columns: repeat(3, 1fr);
