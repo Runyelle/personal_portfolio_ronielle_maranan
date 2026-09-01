@@ -1,0 +1,169 @@
+.showcase {
+  position: relative;
+}
+
+/* ---------- scroll-driven horizontal mode (wide screens) ---------- */
+.showcase.is-scroll-driven {
+  /* 3 panels: 200vh of vertical scroll drives 200vw of horizontal travel */
+  height: 300vh;
+}
+
+.showcase.is-scroll-driven .showcase-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.showcase.is-scroll-driven .showcase-track {
+  display: flex;
+  height: 100%;
+  will-change: transform;
+}
+
+.showcase.is-scroll-driven .panel {
+  flex: 0 0 100vw;
+  height: 100vh;
+}
+
+.showcase-hint {
+  position: absolute;
+  right: max(6vw, 28px);
+  bottom: 30px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  z-index: 3;
+}
+
+/* ---------- fallback: native horizontal swipe (narrow / reduced motion) ---------- */
+.showcase:not(.is-scroll-driven) .showcase-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.showcase:not(.is-scroll-driven) .panel {
+  flex: 0 0 88%;
+  scroll-snap-align: center;
+}
+
+.showcase:not(.is-scroll-driven) .showcase-hint {
+  display: none;
+}
+
+/* ---------- panels ---------- */
+.panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 40px;
+  padding: 120px max(6vw, 26px);
+  overflow: hidden;
+}
+
+.panel-title {
+  font-weight: 700;
+  font-size: clamp(28px, 4.4vw, 54px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin: 10px 0 0;
+}
+
+/* projects */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  max-width: 720px;
+}
+
+.project-card {
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  background: var(--glass-fill);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 20px;
+}
+
+.project-card h3 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  margin: 0 0 8px;
+  color: var(--text);
+}
+
+.project-card p {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-dim);
+  margin: 0 0 14px;
+}
+
+.project-tag {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+/* food */
+.food-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  max-width: 860px;
+}
+
+.food-grid img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* rein clips */
+.clip-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  max-width: 760px;
+}
+
+.clip-grid video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #000;
+}
+
+.panel-empty {
+  font-size: 13px;
+  color: var(--text-faint);
+}
+
+.panel-empty code {
+  color: var(--silver);
+}
+
+@media (max-width: 640px) {
+  .panel {
+    padding: 88px 22px;
+    gap: 28px;
+  }
+  .project-grid {
+    grid-template-columns: 1fr;
+  }
+  .food-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .clip-grid {
+    grid-template-columns: 1fr;
+  }
+}

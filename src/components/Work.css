@@ -1,0 +1,122 @@
+.work {
+  position: relative;
+}
+
+.work-group + .work-group {
+  margin-top: 72px;
+}
+
+.work-list {
+  border-top: 1px solid var(--glass-border);
+}
+
+.work-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px 4px;
+  border-bottom: 1px solid var(--glass-border);
+  transition: padding-left 0.25s ease;
+}
+
+.work-row:hover {
+  padding-left: 12px;
+}
+
+.work-main {
+  min-width: 0;
+}
+
+.work-role {
+  display: block;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  font-size: clamp(17px, 2.4vw, 22px);
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.work-org {
+  font-size: 13px;
+  color: var(--text-faint);
+}
+
+.work-period {
+  flex: none;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.work-period.current {
+  color: #9fbfb1;
+}
+
+/* floating glass preview — anchored to the right margin of the hovered row */
+.work-preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  pointer-events: none;
+  width: 234px;
+  padding: 18px;
+  opacity: 0;
+  transform: translateY(-50%) scale(0.94);
+  transform-origin: center left;
+  transition: opacity 0.18s ease, transform 0.18s ease, left 0.22s ease,
+    top 0.22s ease;
+  background: rgba(20, 20, 24, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.work-preview.show {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+
+.work-preview-role {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 7px;
+}
+
+.work-preview-org {
+  font-size: 11px;
+  color: var(--silver);
+  margin-bottom: 3px;
+}
+
+.work-preview-period {
+  font-size: 10px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+@media (hover: none) {
+  .work-preview {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .work-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .work-period {
+    order: -1;
+    font-size: 10px;
+  }
+}

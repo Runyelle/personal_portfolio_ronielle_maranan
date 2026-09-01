@@ -1,0 +1,79 @@
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.28;
+  will-change: transform;
+}
+
+.blob-cyan {
+  width: 520px;
+  height: 520px;
+  top: -140px;
+  left: -120px;
+  background: radial-gradient(circle, var(--cyan), transparent 70%);
+  animation: drift1 22s ease-in-out infinite;
+}
+
+.blob-violet {
+  width: 600px;
+  height: 600px;
+  top: 20%;
+  right: -200px;
+  background: radial-gradient(circle, var(--violet), transparent 70%);
+  animation: drift2 26s ease-in-out infinite;
+}
+
+.blob-violet2 {
+  width: 440px;
+  height: 440px;
+  bottom: -160px;
+  left: 18%;
+  background: radial-gradient(circle, #6d7078, transparent 70%);
+  opacity: 0.2;
+  animation: drift3 30s ease-in-out infinite;
+}
+
+@keyframes drift1 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(60px, 80px) scale(1.15);
+  }
+}
+
+@keyframes drift2 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-70px, 50px) scale(1.1);
+  }
+}
+
+@keyframes drift3 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(40px, -60px) scale(1.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blob {
+    animation: none !important;
+  }
+}

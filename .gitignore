@@ -416,3 +416,9 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Vite build output
+dist/
+dist-ssr/
+*.local
+.vite/
