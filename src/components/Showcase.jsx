@@ -41,13 +41,29 @@ function LinkIcon() {
   );
 }
 
-const foodPics = Object.values(
+// local files under src/assets/food/ are the fallback when /api/food-images
+// isn't available (e.g. plain `vite` dev with no serverless functions running)
+const localFoodPics = Object.values(
   import.meta.glob('../assets/food/*.{jpg,jpeg,png,avif,webp}', {
     eager: true,
     query: '?url',
     import: 'default',
   })
-);
+).map((url) => ({ id: url, url, caption: null, takenAt: null }));
+
+// Drive's imageMediaMetadata.time is EXIF-style ("2015:04:12 20:29:33");
+// swap the date colons for dashes so Date() can parse it.
+function formatTakenAt(value) {
+  if (!value) return null;
+  const iso = value.replace(/^(\d{4}):(\d{2}):(\d{2})/, '$1-$2-$3');
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toLocaleDateString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+}
 
 const reinClips = Object.values(
   import.meta.glob('../assets/rein/*.{mp4,webm}', {
@@ -69,6 +85,30 @@ export default function Showcase() {
   const [hover, setHover] = useState(null); // { name, shots }
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const [frame, setFrame] = useState(0);
+
+  const [foodPics, setFoodPics] = useState(localFoodPics);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/food-images')
+      .then((r) => r.json())
+      .then((data) => {
+        if (!cancelled && data.images?.length) {
+          setFoodPics(
+            data.images.map((img) => ({
+              id: img.id,
+              url: img.url,
+              caption: img.caption,
+              takenAt: formatTakenAt(img.takenAt),
+            }))
+          );
+        }
+      })
+      .catch(() => {}); // keep the local fallback
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const place = (e) => {
     let x = e.clientX + 24;
@@ -198,8 +238,16 @@ export default function Showcase() {
             </div>
             {foodPics.length ? (
               <div className="food-grid">
-                {foodPics.map((src) => (
-                  <img key={src} src={src} alt="" loading="lazy" />
+                {foodPics.map((pic) => (
+                  <figure className="food-tile" key={pic.id} tabIndex={pic.caption || pic.takenAt ? 0 : -1}>
+                    <img src={pic.url} alt={pic.caption || ''} loading="lazy" />
+                    {(pic.caption || pic.takenAt) && (
+                      <figcaption className="food-caption">
+                        {pic.caption && <span>{pic.caption}</span>}
+                        {pic.takenAt && <span className="food-date mono">{pic.takenAt}</span>}
+                      </figcaption>
+                    )}
+                  </figure>
                 ))}
               </div>
             ) : (
