@@ -72,34 +72,16 @@ export const campus = [
   },
 ];
 
+// ordered most-recent first (top-left) → least-recent last (bottom-right)
 export const projects = [
   {
-    name: '5 Brothers Drafting & Permitting Website',
+    name: 'Estacado Energy Well Portfolio Article',
     blurb:
-      'Full-stack website built for a Houston drafting and permitting business, live at 5brothersdrafting.com. Includes a client-facing site plus a server handling their day-to-day permitting requests.',
-    url: 'https://github.com/Runyelle/5-Brothers-Website',
-    repo: 'github.com/Runyelle/5-Brothers-Website',
-  },
-  {
-    name: 'WasteFlow',
-    blurb:
-      'Industrial symbiosis prototype that matches waste streams from one company with material needs at another, using AI-assisted compatibility analysis. Built as a hackathon demo with a FastAPI backend and a Next.js/React frontend.',
-    url: 'https://github.com/Runyelle/CODERED-ASTRA',
-    repo: 'github.com/Runyelle/CODERED-ASTRA',
-  },
-  {
-    name: 'Smart Playlist App',
-    blurb:
-      "Spotify-integrated app that generates AI transitions between tracks using fal.ai's Stable Audio. Includes OAuth login, a full demo video, and a Spotify-inspired dark theme UI.",
-    url: 'https://github.com/Runyelle/Smart-Playlist-App',
-    repo: 'github.com/Runyelle/Smart-Playlist-App',
-  },
-  {
-    name: 'FlyBetter.ai',
-    blurb:
-      'AI travel planning platform built at TAMUhack 2026 that turns natural-language requests into full itineraries with real flight, hotel, and restaurant data. Also supports phone bookings through an ElevenLabs-powered voice assistant.',
-    url: 'https://github.com/maybiiLen/TAMU-Hack-26',
-    repo: 'github.com/maybiiLen/TAMU-Hack-26',
+      'A website presented in article form for a ConocoPhillips case competition, analyzing a well portfolio using real production, financial, and safety data. Answers judge questions on production efficiency, HSE risk, and which wells to keep, sell, or invest in.',
+    url: 'https://github.com/Gurshaan159/React_presentatoin',
+    repo: 'github.com/Gurshaan159/React_presentatoin',
+    live: 'https://conocophillipspresentation.vercel.app/',
+    images: ['Estacado Energy Well Portfolio Article'],
   },
   {
     name: 'PenguinPipe',
@@ -107,13 +89,40 @@ export const projects = [
       'Pipeline inspection analysis system built at TIDALHACK 2026 that tracks corrosion growth across years of inspection data and flags high-risk zones. Uses a Random Forest model for prediction plus a Gemini-powered chat assistant for querying results.',
     url: 'https://github.com/sart-haker/tidal26',
     repo: 'github.com/sart-haker/tidal26',
+    images: ['PenguinPipe1', 'PenguinPipe2'],
   },
   {
-    name: 'Estacado Energy Well Portfolio Article',
+    name: 'FlyBetter.ai',
     blurb:
-      'A website presented in article form for a ConocoPhillips case competition, analyzing a well portfolio using real production, financial, and safety data. Answers judge questions on production efficiency, HSE risk, and which wells to keep, sell, or invest in.',
-    url: 'https://github.com/Gurshaan159/React_presentatoin',
-    repo: 'github.com/Gurshaan159/React_presentatoin',
+      'AI travel planning platform built at TAMUhack 2026 that turns natural-language requests into full itineraries with real flight, hotel, and restaurant data. Also supports phone bookings through an ElevenLabs-powered voice assistant.',
+    url: 'https://github.com/maybiiLen/TAMU-Hack-26',
+    repo: 'github.com/maybiiLen/TAMU-Hack-26',
+    images: ['FlyBetter1', 'FlyBetter2'],
+  },
+  {
+    name: 'Smart Playlist App',
+    blurb:
+      "Spotify-integrated app that generates AI transitions between tracks using fal.ai's Stable Audio. Includes OAuth login, a full demo video, and a Spotify-inspired dark theme UI.",
+    url: 'https://github.com/Runyelle/Smart-Playlist-App',
+    repo: 'github.com/Runyelle/Smart-Playlist-App',
+    images: ['SmartPlaylist1', 'SmartPlaylist2'],
+  },
+  {
+    name: 'WasteFlow',
+    blurb:
+      'Industrial symbiosis prototype that matches waste streams from one company with material needs at another, using AI-assisted compatibility analysis. Built as a hackathon demo with a FastAPI backend and a Next.js/React frontend.',
+    url: 'https://github.com/Runyelle/CODERED-ASTRA',
+    repo: 'github.com/Runyelle/CODERED-ASTRA',
+    images: ['Wasteflow1'],
+  },
+  {
+    name: '5 Brothers Drafting & Permitting Website',
+    blurb:
+      'Full-stack website built for a Houston drafting and permitting business, live at 5brothersdrafting.com. Includes a client-facing site plus a server handling their day-to-day permitting requests.',
+    url: 'https://github.com/Runyelle/5-Brothers-Website',
+    repo: 'github.com/Runyelle/5-Brothers-Website',
+    live: 'https://5brothersdrafting.com/',
+    images: ['5 Brothers Drafting & Permitting Website'],
   },
 ];
 
