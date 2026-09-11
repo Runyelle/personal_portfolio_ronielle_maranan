@@ -2,6 +2,16 @@
   position: relative;
 }
 
+/* fade the whole section as it scrolls into / out of view (reversible) */
+.showcase-sticky {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.showcase.is-visible .showcase-sticky {
+  opacity: 1;
+}
+
 /* ---------- scroll-driven horizontal mode (wide screens) ---------- */
 .showcase.is-scroll-driven {
   /* 3 panels: 200vh of vertical scroll drives 200vw of horizontal travel */
@@ -24,6 +34,9 @@
 .showcase.is-scroll-driven .panel {
   flex: 0 0 100vw;
   height: 100vh;
+  /* JS sets opacity + scale per panel as it passes through the viewport centre */
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  will-change: opacity, transform;
 }
 
 .showcase-hint {
@@ -71,6 +84,13 @@
   letter-spacing: -0.02em;
   color: var(--text);
   margin: 10px 0 0;
+}
+
+/* FAUD panel has no heading — let the book use the whole panel */
+.panel--faud {
+  padding-top: 48px;
+  padding-bottom: 48px;
+  gap: 0;
 }
 
 /* Projects panel: heading sits as a vertically-centered left column,
@@ -204,54 +224,6 @@
   }
 }
 
-/* food */
-.food-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  max-width: 860px;
-}
-
-.food-tile {
-  position: relative;
-  margin: 0;
-  overflow: hidden;
-  border-radius: 12px;
-}
-
-.food-tile img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
-}
-
-.food-caption {
-  position: absolute;
-  inset: auto 0 0 0;
-  padding: 20px 12px 8px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
-  color: #fff;
-  font-size: 12px;
-  line-height: 1.4;
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  display: flex;
-  flex-direction: column;
-}
-
-.food-tile:hover .food-caption,
-.food-tile:focus-within .food-caption {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.food-date {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.7);
-}
-
 /* rein clips */
 .clip-grid {
   display: grid;
@@ -299,9 +271,6 @@
   .project-grid {
     grid-template-columns: 1fr;
     max-width: 420px;
-  }
-  .food-grid {
-    grid-template-columns: repeat(3, 1fr);
   }
   .clip-grid {
     grid-template-columns: 1fr;

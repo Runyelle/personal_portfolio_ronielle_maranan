@@ -1,0 +1,212 @@
+/* ============ Menu — paged dish showcase (standalone section) ============ */
+
+.menu {
+  position: relative;
+}
+
+.menu-title {
+  font-weight: 700;
+  font-size: clamp(26px, 4.4vw, 44px);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin: 0;
+}
+
+.menu-intro {
+  font-size: 12px;
+  color: var(--text-faint);
+  margin: 12px 0 0;
+}
+
+.menu-deck {
+  margin-top: 40px;
+  border-radius: 4px;
+}
+
+.menu-deck:focus-visible {
+  outline: 1px solid var(--silver-dim);
+  outline-offset: 12px;
+}
+
+/* two dishes per page, side by side on wide screens */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  animation: menu-fade 0.45s ease both;
+}
+
+@keyframes menu-fade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* glass card — same treatment as .project-card in the Showcase */
+.menu-dish {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  background: var(--glass-fill);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 18px;
+}
+
+/* the frame's aspect-ratio is set inline from the image's natural
+   dimensions once it loads; this value is only the pre-load placeholder
+   so the skeleton has height and the layout never jumps */
+.menu-dish-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--bg-2);
+}
+
+.menu-dish-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.menu-dish-media.is-loaded img {
+  opacity: 1;
+}
+
+/* lightweight shimmer placeholder until the real photo arrives */
+.menu-dish-skeleton {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    var(--glass-fill) 20%,
+    var(--glass-fill-strong) 50%,
+    var(--glass-fill) 80%
+  );
+  background-size: 220% 100%;
+  animation: menu-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes menu-shimmer {
+  from {
+    background-position: 220% 0;
+  }
+  to {
+    background-position: -220% 0;
+  }
+}
+
+/* shown when a dish has no photo in src/assets/food/ yet */
+.menu-dish-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.menu-dish-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.menu-dish-name {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  font-size: clamp(16px, 2.2vw, 20px);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin: 0;
+}
+
+.menu-dish-place {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin: 0;
+}
+
+.menu-dish-note {
+  font-size: 13px;
+  line-height: 1.62;
+  color: var(--text-dim);
+  margin: 2px 0 0;
+}
+
+/* pagination — mirrors .book-controls in FoodBook.css */
+.menu-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 28px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.menu-controls button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.menu-controls button:not(:disabled):hover {
+  color: var(--text);
+  border-color: var(--text-faint);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.menu-controls button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+@media (max-width: 640px) {
+  .menu-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-grid {
+    animation-duration: 0.001s;
+  }
+  .menu-dish-media img {
+    transition-duration: 0.001s;
+  }
+  .menu-dish-skeleton {
+    animation: none;
+  }
+}

@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { projects } from '../data/content.js';
 import { useMediaQuery } from '../hooks/useMediaQuery.js';
+import FoodBook from './FoodBook.jsx';
 import './Showcase.css';
 
 // map every project screenshot by its file name (no extension)
@@ -41,28 +42,87 @@ function LinkIcon() {
   );
 }
 
-// local files under src/assets/food/ are the fallback when /api/food-images
-// isn't available (e.g. plain `vite` dev with no serverless functions running)
-const localFoodPics = Object.values(
-  import.meta.glob('../assets/food/*.{jpg,jpeg,png,avif,webp}', {
-    eager: true,
-    query: '?url',
-    import: 'default',
-  })
-).map((url) => ({ id: url, url, caption: null, takenAt: null }));
+const SEP_RE = /\s*[~—]\s*|\s+-\s+/;
+const DATE_RE = /^\d{4}-\d{2}(-\d{2})?$/;
 
-// Drive's imageMediaMetadata.time is EXIF-style ("2015:04:12 20:29:33");
-// swap the date colons for dashes so Date() can parse it.
-function formatTakenAt(value) {
+// mirrors parseName() in api/food-images.js so local files use the same convention:
+//   "Place Name ~ Dish Name ~ 2026-03-14.jpg"
+function parseFoodName(rawName) {
+  const name = rawName.replace(/\.[^.]+$/, '').trim();
+  const parts = name
+    .split(SEP_RE)
+    .map((p) => p.trim())
+    .filter(Boolean);
+
+  if (parts.length <= 1) return { place: null, dish: name || null, dateOverride: null };
+
+  let dateOverride = null;
+  if (DATE_RE.test(parts[parts.length - 1])) dateOverride = parts.pop();
+  const [place, ...rest] = parts;
+  return { place: place || null, dish: rest.join(' ~ ') || null, dateOverride };
+}
+
+function overrideToIso(value) {
   if (!value) return null;
-  const iso = value.replace(/^(\d{4}):(\d{2}):(\d{2})/, '$1-$2-$3');
+  return value.length === 7 ? `${value}-01T00:00:00` : `${value}T00:00:00`;
+}
+
+// local files under src/assets/food/ are the fallback whenever /api/food-images
+// isn't available or returns nothing — plain `vite` dev with no serverless
+// functions, a Drive/API error, an empty folder, etc.
+const localFoodPics = Object.entries(
+  import.meta.glob(
+    '../assets/food/*.{jpg,jpeg,jfif,png,avif,webp,gif,heic,heif,JPG,JPEG,PNG,AVIF,WEBP,HEIC}',
+    {
+      eager: true,
+      query: '?url',
+      import: 'default',
+    }
+  )
+).map(([path, url]) => {
+  const { place, dish, dateOverride } = parseFoodName(path.split('/').pop());
+  return {
+    id: url,
+    url,
+    place,
+    caption: dish,
+    takenAt: overrideToIso(dateOverride),
+    mapUrl: null,
+  };
+});
+
+function formatMonth(iso) {
+  if (!iso) return null;
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return null;
-  return date.toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
+  return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short' });
+}
+
+// group photos by place, newest place first, newest photo first within a place
+function groupByPlace(pics) {
+  const groups = new Map();
+
+  pics.forEach((pic) => {
+    const key = pic.place || 'Elsewhere';
+    if (!groups.has(key)) {
+      groups.set(key, { place: key, photos: [], latest: -Infinity, mapUrl: null });
+    }
+    const g = groups.get(key);
+    g.photos.push(pic);
+    const t = pic.takenAt ? Date.parse(pic.takenAt) : NaN;
+    if (!Number.isNaN(t) && t > g.latest) g.latest = t;
+    if (!g.mapUrl && pic.mapUrl) g.mapUrl = pic.mapUrl;
   });
+
+  const list = [...groups.values()];
+  list.forEach((g) => {
+    g.photos.sort(
+      (a, b) => (Date.parse(b.takenAt || 0) || 0) - (Date.parse(a.takenAt || 0) || 0)
+    );
+    g.dateLabel = formatMonth(g.photos.find((p) => p.takenAt)?.takenAt);
+  });
+  list.sort((a, b) => b.latest - a.latest);
+  return list;
 }
 
 const reinClips = Object.values(
@@ -76,6 +136,7 @@ const reinClips = Object.values(
 export default function Showcase() {
   const sectionRef = useRef(null);
   const trackRef = useRef(null);
+  const panelRefs = useRef([]);
   const wideEnough = useMediaQuery('(min-width: 820px)');
   const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const canHover = useMediaQuery('(hover: hover)');
@@ -86,20 +147,32 @@ export default function Showcase() {
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const [frame, setFrame] = useState(0);
 
+  // reversible: fades the whole showcase as it scrolls in and back out
+  const [sectionVisible, setSectionVisible] = useState(
+    () => typeof IntersectionObserver === 'undefined'
+  );
+
   const [foodPics, setFoodPics] = useState(localFoodPics);
+  const foodPlaces = useMemo(() => groupByPlace(foodPics), [foodPics]);
+
+  const setPanel = (i) => (el) => {
+    panelRefs.current[i] = el;
+  };
 
   useEffect(() => {
     let cancelled = false;
     fetch('/api/food-images')
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : null)) // 404 in `vite` dev, 5xx on API error
       .then((data) => {
-        if (!cancelled && data.images?.length) {
+        if (!cancelled && data?.images?.length) {
           setFoodPics(
             data.images.map((img) => ({
               id: img.id,
               url: img.url,
-              caption: img.caption,
-              takenAt: formatTakenAt(img.takenAt),
+              place: img.place || null,
+              caption: img.caption || null,
+              takenAt: img.takenAt || null,
+              mapUrl: img.mapUrl || null,
             }))
           );
         }
@@ -141,13 +214,38 @@ export default function Showcase() {
     return () => clearInterval(id);
   }, [hover]);
 
+  // fade the section in/out as it enters and leaves the viewport (reversible)
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setSectionVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => setSectionVisible(entry.isIntersecting),
+      { threshold: 0, rootMargin: '-6% 0px -6% 0px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     const section = sectionRef.current;
     const track = trackRef.current;
     if (!section || !track) return;
 
+    const clearPanels = () => {
+      panelRefs.current.forEach((el) => {
+        if (el) {
+          el.style.opacity = '';
+          el.style.transform = '';
+        }
+      });
+    };
+
     if (!scrollDriven) {
       track.style.transform = '';
+      clearPanels();
       return;
     }
 
@@ -162,6 +260,17 @@ export default function Showcase() {
           : 0;
       const distance = track.scrollWidth - window.innerWidth;
       track.style.transform = `translate3d(${-progress * distance}px, 0, 0)`;
+
+      // each panel fades / scales as it moves through the centre of the viewport
+      const panels = panelRefs.current.filter(Boolean);
+      const last = panels.length - 1;
+      panels.forEach((el, i) => {
+        const centre = last > 0 ? i / last : 0;
+        const away = Math.abs(progress - centre);
+        const t = Math.max(0, 1 - away * 2.4);
+        el.style.opacity = (0.12 + 0.88 * t).toFixed(3);
+        el.style.transform = `scale(${(0.9 + 0.1 * t).toFixed(3)})`;
+      });
     };
 
     const onScroll = () => {
@@ -175,6 +284,7 @@ export default function Showcase() {
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
       if (raf) cancelAnimationFrame(raf);
+      clearPanels();
     };
   }, [scrollDriven]);
 
@@ -182,12 +292,14 @@ export default function Showcase() {
     <section
       id="showcase"
       ref={sectionRef}
-      className={`showcase${scrollDriven ? ' is-scroll-driven' : ''}`}
+      className={`showcase${scrollDriven ? ' is-scroll-driven' : ''}${
+        sectionVisible ? ' is-visible' : ''
+      }`}
     >
       <div className="showcase-sticky">
         <div className="showcase-track" ref={trackRef}>
           {/* Panel 1 — Projects */}
-          <div className="panel panel-projects">
+          <div className="panel panel-projects" ref={setPanel(0)}>
             <div className="panel-head">
               <span className="section-label">Projects</span>
               <h2 className="panel-title display">Things I've built.</h2>
@@ -230,35 +342,13 @@ export default function Showcase() {
             </div>
           </div>
 
-          {/* Panel 2 — Food */}
-          <div className="panel">
-            <div className="panel-head">
-              <span className="section-label">Off the clock</span>
-              <h2 className="panel-title display">FAUD.</h2>
-            </div>
-            {foodPics.length ? (
-              <div className="food-grid">
-                {foodPics.map((pic) => (
-                  <figure className="food-tile" key={pic.id} tabIndex={pic.caption || pic.takenAt ? 0 : -1}>
-                    <img src={pic.url} alt={pic.caption || ''} loading="lazy" />
-                    {(pic.caption || pic.takenAt) && (
-                      <figcaption className="food-caption">
-                        {pic.caption && <span>{pic.caption}</span>}
-                        {pic.takenAt && <span className="food-date mono">{pic.takenAt}</span>}
-                      </figcaption>
-                    )}
-                  </figure>
-                ))}
-              </div>
-            ) : (
-              <p className="panel-empty mono">
-                Drop photos in <code>src/assets/food/</code>
-              </p>
-            )}
+          {/* Panel 2 — FAUD menu (no panel head: the book's title page carries it) */}
+          <div className="panel panel--faud" ref={setPanel(1)}>
+            <FoodBook places={foodPlaces} />
           </div>
 
           {/* Panel 3 — Rein clips */}
-          <div className="panel">
+          <div className="panel" ref={setPanel(2)}>
             <div className="panel-head">
               <span className="section-label">Also</span>
               <h2 className="panel-title display">Epic Rein clips.</h2>

@@ -126,6 +126,41 @@ export const projects = [
   },
 ];
 
+// "Menu" section — a rotating handful of dishes worth remembering.
+// `src` is a file name inside src/assets/food/ (resolved by Menu.jsx).
+// Drop a photo in that folder and point `src` at it; a missing file just
+// shows a "photo coming" placeholder so the layout still holds.
+export const menu = [
+  {
+    id: 'katsu',
+    name: 'Chicken Katsu',
+    place: 'The Cheesecake Factory',
+    note: 'Ordered it expecting nothing and thought about the crust for a week.',
+    src: 'CheeseCake Factory - Chicken Katsu.jpeg',
+  },
+  {
+    id: 'scallops',
+    name: 'Seared Scallops',
+    place: 'Uchi',
+    note: 'The kind of plate you photograph before you remember you were hungry.',
+    src: 'Uchi ~ Seared Scallops.jpg',
+  },
+  {
+    id: 'pizza',
+    name: 'Wood-Fired Pizza',
+    place: 'Coltivare',
+    note: 'Garden out back, oven up front — everything on it was within 30 feet an hour ago.',
+    src: 'Coltivare ~ Wood-Fired Pizza.jpg',
+  },
+  {
+    id: 'brunch',
+    name: 'Brunch Spread',
+    place: 'Prego',
+    note: 'Split four ways and still too much. No regrets.',
+    src: 'Prego ~ Brunch Spread.jpg',
+  },
+];
+
 export const navLinks = [
   { href: '#about', label: 'About' },
   { href: '#work', label: 'Work' },
