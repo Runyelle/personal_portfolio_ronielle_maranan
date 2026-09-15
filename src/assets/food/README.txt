@@ -1,31 +1,25 @@
-Food photos for the FAUD menu (panel 2 of the Showcase).
+Source photos for the Food Album (src/components/FoodAlbum.jsx).
 
-These local files are only the fallback for `vite` dev with no serverless
-functions running. In production the photos come from the Google Drive folder
-via /api/food-images.
+These originals are never shipped as-is. `npm run gen:food-thumbs`
+(auto-run before `dev` and `build`, see scripts/generate-food-thumbnails.mjs)
+uses sharp to center-crop each one into a uniform square thumbnail in
+src/assets/food-thumbs/ (generated, gitignored) plus a manifest.json with the
+place/caption/date metadata the grid needs. Drop a new photo here and it
+picks it up on the next dev/build.
 
 NAME EACH FILE LIKE THIS:
 
     Place Name ~ Dish Name.jpg
 
-  - part 1  -> place  (groups the menu; leave it off and the photo lands under "Elsewhere")
-  - part 2  -> dish   (caption shown on hover; a Drive "description" overrides it)
+  - part 1  -> place    (shown as the album cover's tooltip alongside the dish)
+  - part 2  -> dish     (caption shown on hover)
 
-The date is read automatically from the photo's EXIF capture time
-(imageMediaMetadata.time from the Drive API) — you do NOT normally add it.
-
-Only if a photo has no EXIF date (screenshots, edited/exported images, anything
-sent through a messaging app) add a third segment so it still sorts correctly:
+The grid sorts newest-first. Without EXIF parsing at build time, the date
+comes from an optional third segment:
 
     Place Name ~ Dish Name ~ 2026-03-14.jpg     (YYYY-MM or YYYY-MM-DD)
 
-Without any date a place drops to the bottom of the menu with no date label.
+Skip it and the photo sorts by its file's last-modified time instead.
 
 Separators accepted: " ~ ", " - ", " em dash ". With no separator the whole
 name is treated as the dish.
-
-The menu orders places newest-first by their most recent photo, 6 photos per
-page, and a place never shares a page with another place.
-
-If a photo has GPS EXIF and GOOGLE_MAPS_API_KEY is set in the deploy env, a
-missing place name is filled in by reverse-geocoding the coordinates.

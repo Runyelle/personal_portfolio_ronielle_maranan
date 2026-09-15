@@ -4,6 +4,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "gen:food-thumbs": "node scripts/generate-food-thumbnails.mjs",
+    "predev": "npm run gen:food-thumbs",
+    "prebuild": "npm run gen:food-thumbs",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
@@ -12,10 +15,14 @@
     "google-auth-library": "^11.0.2",
     "googleapis": "^178.0.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-device-mockup": "^1.0.0",
+    "react-dom": "^18.3.1",
+    "react-parallax-tilt": "^1.7.342",
+    "tslib": "^2.8.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
+    "sharp": "^0.35.4",
     "vite": "^5.4.11"
   }
 }

@@ -86,11 +86,12 @@
   margin: 10px 0 0;
 }
 
-/* FAUD panel has no heading — let the book use the whole panel */
-.panel--faud {
-  padding-top: 48px;
-  padding-bottom: 48px;
-  gap: 0;
+/* Food Album panel: the iPad mockup needs most of the 100vh it's given, so
+   trim the padding/gap the other panels use for their shorter content */
+.panel--food-album {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  gap: 14px;
 }
 
 /* Projects panel: heading sits as a vertically-centered left column,

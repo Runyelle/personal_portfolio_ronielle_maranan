@@ -1,0 +1,441 @@
+/* ============ Food Album — Photos-app grid inside an iPad mockup ============
+   Rendered as panel 2 of the Showcase carousel (see Showcase.jsx /
+   .panel--food-album in Showcase.css) — spacing above comes from the
+   panel's own `gap`, not a margin here. */
+
+.food-album-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+/* scroll-driven panels are a fixed 100vh: the stage takes whatever is left
+   under the heading and FoodAlbum measures it to size the iPad. flex-basis 0
+   keeps the device's own size from feeding back into that measurement. */
+.food-album-stage.is-fit {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+/* untransformed hit area for the tilt — pointer math reads this box, not the
+   tilting element, so the device never jitters under the cursor */
+.food-album-frame {
+  display: flex;
+  padding: 10px;
+}
+
+/* the device frame itself is drawn by react-device-mockup with an inline
+   border — we can't reach that div with CSS, so the "premium" edge (thin
+   rim-light + soft ambient shadow) lives on the tilt wrapper, which hugs the
+   frame exactly (border-radius set inline from the mockup's own math) */
+.food-album-tilt {
+  position: relative;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.18),
+    0 8px 24px rgba(0, 0, 0, 0.45),
+    0 40px 90px rgba(0, 0, 0, 0.55);
+}
+
+/* the app is laid out at a fixed logical width and zoomed to the screen, so
+   it scales like a real screenshot instead of reflowing into empty space */
+.fa-screen {
+  flex: none;
+}
+
+/* ================================================================
+   Everything below is the Photos app itself, rendered inside the
+   device mockup. It is deliberately a light, system-native "screenshot"
+   and does NOT use the site's dark theme tokens.
+   ================================================================ */
+
+.fa-app {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  color: #1c1c1e;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif;
+  overflow: hidden;
+}
+
+.fa-sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 27%;
+  min-width: 108px;
+  background: #f7f7f8;
+  border-right: 1px solid #e2e2e4;
+  padding: 8px 6px;
+  overflow-y: auto;
+}
+
+.fa-sidebar-head {
+  display: flex;
+  justify-content: flex-end;
+  padding: 2px 6px 8px;
+  color: #8e8e93;
+  font-size: 11px;
+}
+
+.fa-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.fa-sidebar-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 7px;
+  border-radius: 6px;
+  font-size: 10.5px;
+  color: #1c1c1e;
+  white-space: nowrap;
+}
+
+.fa-sidebar-row.active {
+  background: #007aff;
+  color: #fff;
+}
+
+.fa-icon {
+  font-size: 10px;
+  width: 13px;
+  text-align: center;
+  flex: none;
+}
+
+.fa-sidebar-albums-head {
+  margin-top: 12px;
+  padding: 4px 7px;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #8e8e93;
+}
+
+.fa-album-entry {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 7px;
+  border-radius: 6px;
+}
+
+.fa-album-entry.active {
+  background: #e8e8ea;
+}
+
+.fa-album-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  overflow: hidden;
+  flex: none;
+}
+
+.fa-album-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.fa-album-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.fa-album-name {
+  font-size: 10.5px;
+  color: #1c1c1e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fa-album-count {
+  font-size: 9px;
+  color: #8e8e93;
+}
+
+.fa-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.fa-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid #e2e2e4;
+  flex: none;
+}
+
+.fa-topbar-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1c1c1e;
+}
+
+.fa-topbar-action {
+  font-size: 11px;
+  color: #007aff;
+}
+
+.fa-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 2px;
+  padding: 2px;
+  overflow-y: auto;
+  background: #fff;
+  align-content: start;
+}
+
+/* pre-cropped square thumbnails from sharp — no object-fit needed for
+   correctness, only as a defensive fallback against rounding */
+.fa-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  display: block;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #eee;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  cursor: pointer;
+  position: relative;
+}
+
+.fa-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.15s ease;
+}
+
+.fa-thumb:hover img {
+  transform: scale(1.04);
+}
+
+.fa-thumb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.15s ease;
+}
+
+.fa-thumb:hover::after {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.fa-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8e8e93;
+  font-size: 11px;
+  text-align: center;
+  padding: 20px;
+  margin: 0;
+}
+
+/* ================================================================
+   Detail view — full-screen photo, opened by clicking a grid thumbnail.
+   Overlays the whole app (sidebar included), same as real Photos.
+   ================================================================ */
+
+.fa-detail {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  animation: fa-detail-in 0.18s ease;
+}
+
+@keyframes fa-detail-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.fa-detail-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+  padding: 8px 14px;
+  border-bottom: 1px solid #e2e2e4;
+  gap: 10px;
+}
+
+.fa-detail-back {
+  border: 0;
+  background: none;
+  padding: 0;
+  font-size: 20px;
+  line-height: 1;
+  color: #007aff;
+  cursor: pointer;
+  flex: none;
+}
+
+.fa-detail-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-width: 0;
+  flex: 1;
+}
+
+.fa-detail-place {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1c1c1e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.fa-detail-date {
+  font-size: 9.5px;
+  color: #8e8e93;
+}
+
+.fa-detail-more {
+  font-size: 11px;
+  color: #007aff;
+  letter-spacing: -1px;
+  flex: none;
+}
+
+.fa-detail-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  overflow: hidden;
+}
+
+.fa-detail-photo {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.fa-detail-nav {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 15%;
+  border: 0;
+  background: transparent;
+  color: rgba(28, 28, 30, 0.35);
+  font-size: 26px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.fa-detail-nav:hover {
+  color: rgba(28, 28, 30, 0.75);
+}
+
+.fa-detail-nav--prev {
+  left: 0;
+  text-align: left;
+  padding-left: 6px;
+}
+
+.fa-detail-nav--next {
+  right: 0;
+  text-align: right;
+  padding-right: 6px;
+}
+
+.fa-detail-caption {
+  flex: none;
+  margin: 0;
+  padding: 4px 14px;
+  font-size: 10.5px;
+  color: #8e8e93;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fa-detail-filmstrip {
+  flex: none;
+  display: flex;
+  gap: 3px;
+  padding: 6px 8px;
+  overflow-x: auto;
+  border-top: 1px solid #e2e2e4;
+  background: #fff;
+}
+
+.fa-detail-filmthumb {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 0.15s ease, border-color 0.15s ease;
+}
+
+.fa-detail-filmthumb.active {
+  opacity: 1;
+  border-color: #007aff;
+}
+
+.fa-detail-filmthumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.fa-detail-actions {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 6px 10px;
+  border-top: 1px solid #e2e2e4;
+  font-size: 14px;
+  color: #1c1c1e;
+}

@@ -422,3 +422,6 @@ dist/
 dist-ssr/
 *.local
 .vite/
+
+# Generated at build time by scripts/generate-food-thumbnails.mjs
+src/assets/food-thumbs/
