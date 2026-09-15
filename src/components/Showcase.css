@@ -226,21 +226,6 @@
 }
 
 /* rein clips */
-.clip-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  max-width: 760px;
-}
-
-.clip-grid video {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  border-radius: 12px;
-  background: #000;
-}
-
 .panel-empty {
   font-size: 13px;
   color: var(--text-faint);
@@ -272,8 +257,5 @@
   .project-grid {
     grid-template-columns: 1fr;
     max-width: 420px;
-  }
-  .clip-grid {
-    grid-template-columns: 1fr;
   }
 }

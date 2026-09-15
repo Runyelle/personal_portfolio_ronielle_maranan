@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { projects } from '../data/content.js';
 import { useMediaQuery } from '../hooks/useMediaQuery.js';
 import FoodAlbum from './FoodAlbum.jsx';
+import NowPlaying from './NowPlaying.jsx';
 import './Showcase.css';
 
 // map every project screenshot by its file name (no extension)
@@ -41,14 +42,6 @@ function LinkIcon() {
     </svg>
   );
 }
-
-const reinClips = Object.values(
-  import.meta.glob('../assets/rein/*.{mp4,webm}', {
-    eager: true,
-    query: '?url',
-    import: 'default',
-  })
-);
 
 export default function Showcase() {
   const sectionRef = useRef(null);
@@ -237,30 +230,13 @@ export default function Showcase() {
             <FoodAlbum fitHeight={scrollDriven} />
           </div>
 
-          {/* Panel 3 — Rein clips */}
+          {/* Panel 3 — Outside Work (Spotify) */}
           <div className="panel" ref={setPanel(2)}>
             <div className="panel-head">
               <span className="section-label">Also</span>
-              <h2 className="panel-title display">Epic Rein clips.</h2>
+              <h2 className="panel-title display">Outside Work.</h2>
             </div>
-            {reinClips.length ? (
-              <div className="clip-grid">
-                {reinClips.map((src) => (
-                  <video
-                    key={src}
-                    src={src}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                  />
-                ))}
-              </div>
-            ) : (
-              <p className="panel-empty mono">
-                Drop clips (.mp4 / .webm) in <code>src/assets/rein/</code>
-              </p>
-            )}
+            <NowPlaying />
           </div>
         </div>
 
