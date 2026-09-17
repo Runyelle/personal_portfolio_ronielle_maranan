@@ -39,13 +39,22 @@ src/
     NavLinks.jsx  / .css     # fixed top-right nav links
     Hero.jsx      / .css     # hero words + cursor-following speech bubble (tap fallback on touch)
     About.jsx     / .css     # minimalist about statement
-    Showcase.jsx  / .css     # scroll-driven horizontal section: projects / food / Spotify / Overwatch
+    Showcase.jsx  / .css     # scroll-driven horizontal section: projects / food / outside work
+    Bout.jsx      / .css     # "What I'm bout." bio card (copy lives in data/content.js)
+    NowPlaying.jsx / .css    # Spotify card, fed by api/spotify.js
     OverwatchStats.jsx / .css # Overwatch 2 career card, fed by api/overwatch.js
+    ReinClips.jsx / .css     # Rein clips card (placeholder for now)
+    TextMe.jsx    / .css     # iMessage-style contact chat; rendered on the
+                             # Outside Work slide and in Contact, one shared
+                             # conversation (src/state/chatStore.js)
+  state/
+    chatStore.js             # the chat script + shared state, reset on refresh
     Work.jsx      / .css     # work list + right-anchored glass preview
     Contact.jsx   / .css     # contact panel
     Footer.jsx    / .css     # footer
 api/
   overwatch.js               # Vercel function: OverFast API → trimmed data for the Overwatch card
+  contact.js                 # Vercel function: emails the chat card's answers (Resend)
 ```
 
 The original design lives in `ronielle-portfolio-glass.html` for reference.

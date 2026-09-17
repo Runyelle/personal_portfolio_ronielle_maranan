@@ -55,7 +55,16 @@ export default function OverwatchStats() {
   }, []);
 
   if (!data) return <Skeleton />;
-  if (data.status !== 'ok') return <p className="panel-empty ow-empty mono">{emptyMessage(data)}</p>;
+  if (data.status !== 'ok') {
+    // still a card, so the Outside Work stack keeps its shape
+    return (
+      <div className="ow">
+        <div className="ow-card glass">
+          <p className="ow-empty mono">{emptyMessage(data)}</p>
+        </div>
+      </div>
+    );
+  }
 
   const { player } = data;
 
@@ -69,7 +78,15 @@ export default function OverwatchStats() {
         <header className="ow-head">
           {player.avatar && <img className="ow-avatar" src={player.avatar} alt="" />}
           <div className="ow-id">
-            <h3 className="ow-name display">{player.name}</h3>
+            <h3 className="ow-name display">
+              <a href={player.profileUrl} target="_blank" rel="noopener noreferrer">
+                {player.name}
+                <span className="ow-arrow" aria-hidden="true">
+                  {' '}
+                  ↗
+                </span>
+              </a>
+            </h3>
             <p className="ow-sub mono">
               {/* each part stays whole; a narrow card breaks between them, not inside one */}
               {[player.title, player.endorsement != null && `Endorsement ${player.endorsement}`]
@@ -120,31 +137,24 @@ export default function OverwatchStats() {
             </dl>
 
             {player.topHeroes.length > 0 && (
-              <div className="ow-heroes">
-                <span className="ow-label mono">Most played</span>
-                <ol>
-                  {player.topHeroes.map((h) => (
-                    <li key={h.key} className="ow-hero">
-                      {h.portrait && <img src={h.portrait} alt="" />}
-                      <div>
-                        <span className="ow-hero-name">{h.name}</span>
-                        <span className="ow-hero-meta mono">
-                          {number.format(h.hoursPlayed)}h · {h.winrate.toFixed(0)}% WR
-                        </span>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-              </div>
+              <ol className="ow-heroes" aria-label="Most played heroes">
+                {player.topHeroes.map((h) => (
+                  <li key={h.key} className="ow-hero">
+                    {h.portrait && <img src={h.portrait} alt="" />}
+                    <div>
+                      <span className="ow-hero-name">{h.name}</span>
+                      <span className="ow-hero-meta mono">
+                        {number.format(h.hoursPlayed)}h · {h.winrate.toFixed(0)}% WR
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ol>
             )}
           </>
         ) : (
-          <p className="ow-private mono">Career stats are private right now.</p>
+          <p className="ow-empty mono">Career stats are private right now.</p>
         )}
-
-        <a className="ow-link mono" href={player.profileUrl} target="_blank" rel="noopener noreferrer">
-          View career profile ↗
-        </a>
       </article>
     </div>
   );

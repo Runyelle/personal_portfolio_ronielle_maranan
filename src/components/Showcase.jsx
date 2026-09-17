@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { projects } from '../data/content.js';
 import { useMediaQuery } from '../hooks/useMediaQuery.js';
+import Bout from './Bout.jsx';
 import FoodAlbum from './FoodAlbum.jsx';
 import NowPlaying from './NowPlaying.jsx';
 import OverwatchStats from './OverwatchStats.jsx';
+import ReinClips from './ReinClips.jsx';
+import TextMe from './TextMe.jsx';
 import './Showcase.css';
 
 // map every project screenshot by its file name (no extension)
@@ -186,7 +189,7 @@ export default function Showcase() {
           <div className="panel panel-projects" ref={setPanel(0)}>
             <div className="panel-head">
               <span className="section-label">Projects</span>
-              <h2 className="panel-title display">Things I've built.</h2>
+              <h2 className="panel-title display">I built that.</h2>
             </div>
             <div className="project-grid">
               {projectsWithShots.map((p) => (
@@ -231,15 +234,16 @@ export default function Showcase() {
             <FoodAlbum fitHeight={scrollDriven} />
           </div>
 
-          {/* Panel 3 — Outside Work (Spotify + Overwatch 2) */}
+          {/* Panel 3 — Outside Work: bio on the left, Spotify / Overwatch / Rein cards stacked right */}
           <div className="panel panel--outside" ref={setPanel(2)}>
-            <div className="panel-head">
-              <span className="section-label">Also</span>
-              <h2 className="panel-title display">Outside Work.</h2>
-            </div>
-            <div className="outside-grid">
-              <NowPlaying />
-              <OverwatchStats />
+            <div className="outside-layout">
+              <Bout />
+              <div className="outside-cards">
+                <NowPlaying />
+                <OverwatchStats />
+                <ReinClips />
+                <TextMe />
+              </div>
             </div>
           </div>
         </div>

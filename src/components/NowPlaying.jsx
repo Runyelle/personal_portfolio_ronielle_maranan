@@ -36,9 +36,9 @@ function Skeleton() {
       <div className="np-card glass" role="status" aria-label="Loading Spotify activity">
         <span className="np-art np-shimmer" />
         <div className="np-body">
-          <span className="np-line np-shimmer" style={{ width: '28%' }} />
-          <span className="np-line np-line--title np-shimmer" style={{ width: '70%' }} />
-          <span className="np-line np-shimmer" style={{ width: '45%' }} />
+          <span className="np-line np-shimmer" style={{ width: '40%' }} />
+          <span className="np-line np-line--title np-shimmer" style={{ width: '75%' }} />
+          <span className="np-line np-shimmer" style={{ width: '55%' }} />
         </div>
       </div>
     </div>
@@ -130,7 +130,15 @@ export default function NowPlaying() {
     if (import.meta.env.DEV && data.status === 'unconfigured') {
       message = 'Add SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET to .env.local.';
     }
-    return <p className="panel-empty np-empty mono">{message}</p>;
+    // still a card, so the Outside Work stack keeps its shape
+    return (
+      <div className="np">
+        <div className="np-card np-card--empty glass">
+          <SpotifyIcon />
+          <p className="np-empty mono">{message}</p>
+        </div>
+      </div>
+    );
   }
 
   const { track } = data;
@@ -157,24 +165,41 @@ export default function NowPlaying() {
         </a>
 
         <div className="np-body">
-          <div className={`np-status mono${playing ? ' is-playing' : ''}`}>
-            {playing ? (
-              <>
-                <span className="np-eq" aria-hidden="true">
-                  <i />
-                  <i />
-                  <i />
-                </span>
-                Now playing
-              </>
-            ) : (
-              <>Last played{data.playedAt && ` · ${timeAgo(data.playedAt, now)}`}</>
+          <div className="np-top">
+            <div className={`np-status mono${playing ? ' is-playing' : ''}`}>
+              {playing ? (
+                <>
+                  <span className="np-eq" aria-hidden="true">
+                    <i />
+                    <i />
+                    <i />
+                  </span>
+                  Now playing
+                </>
+              ) : (
+                <>Last played{data.playedAt && ` · ${timeAgo(data.playedAt, now)}`}</>
+              )}
+            </div>
+            {track.url && (
+              <a
+                className="np-brand"
+                href={track.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open in Spotify"
+              >
+                <SpotifyIcon />
+              </a>
             )}
           </div>
 
           <h3 className="np-title display">{track.title}</h3>
-          {track.artists && <p className="np-artist">{track.artists}</p>}
-          {track.album && <p className="np-album mono">{track.album}</p>}
+          {track.artists && (
+            <p className="np-artist">
+              {track.artists}
+              {track.album && <span className="np-album"> — {track.album}</span>}
+            </p>
+          )}
 
           {playing && track.durationMs ? (
             <div className="np-progress mono">
@@ -193,13 +218,6 @@ export default function NowPlaying() {
               <span>{formatTime(track.durationMs)}</span>
             </div>
           ) : null}
-
-          {track.url && (
-            <a className="np-link mono" href={track.url} target="_blank" rel="noopener noreferrer">
-              <SpotifyIcon />
-              Open in Spotify
-            </a>
-          )}
         </div>
       </article>
     </div>

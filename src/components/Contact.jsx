@@ -1,4 +1,5 @@
 import { useReveal } from '../hooks/useReveal.js';
+import TextMe from './TextMe.jsx';
 import './Contact.css';
 
 export default function Contact() {
@@ -20,6 +21,11 @@ export default function Contact() {
         <br />
         touch
       </a>
+
+      {/* same conversation as the card on the Showcase's Outside Work slide */}
+      <div className="contact-chat">
+        <TextMe />
+      </div>
 
       <div className="social-row">
         <a

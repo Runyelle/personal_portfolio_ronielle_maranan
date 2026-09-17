@@ -1,0 +1,50 @@
+/* ============ Rein clips — placeholder card ============
+   Bottom of the Outside Work card stack; grows to fill whatever height the
+   Spotify and Overwatch cards leave. */
+
+.rein {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 112px;
+  padding: clamp(18px, 1.4vw, 26px) clamp(22px, 1.5vw, 28px);
+  border-radius: var(--radius-md);
+}
+
+.rein-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rein-label {
+  font-size: clamp(11px, 0.55vw, 13px);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--silver-dim);
+}
+
+.rein-pill {
+  padding: 3px 10px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-full);
+  font-size: clamp(10.5px, 0.55vw, 13px);
+  color: var(--text-dim);
+}
+
+.rein-frame {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  border: 1px dashed var(--glass-border);
+  border-radius: 12px;
+  color: var(--text-faint);
+}
+
+.rein-frame svg {
+  width: 22px;
+  height: 22px;
+}

@@ -1,0 +1,208 @@
+/* ============ Text me — iMessage-style contact card ============
+   Rendered twice (Outside Work slide + Contact section), both driven by
+   src/state/chatStore.js, so it's one conversation either way. */
+
+.tm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: clamp(16px, 1.3vw, 24px) clamp(18px, 1.4vw, 26px);
+  border-radius: var(--radius-md);
+}
+
+.tm-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-height: 96px;
+  max-height: var(--tm-thread-max, 240px);
+  overflow-y: auto;
+  /* fade the older messages out at the top edge instead of slicing a bubble */
+  mask-image: linear-gradient(to bottom, transparent, #000 10px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10px);
+  scrollbar-width: thin;
+  scrollbar-color: var(--glass-border) transparent;
+}
+
+.tm-bubble {
+  max-width: 82%;
+  margin: 0;
+  padding: 9px 14px;
+  border-radius: 18px;
+  font-size: clamp(13.5px, 0.85vw, 18px);
+  line-height: 1.45;
+  /* long links / words shouldn't blow the bubble past the card */
+  overflow-wrap: anywhere;
+}
+
+/* mine: grey, left */
+.tm-bubble--me {
+  align-self: flex-start;
+  border-bottom-left-radius: 6px;
+  background: var(--glass-fill-strong);
+  color: var(--text);
+}
+
+/* theirs: blue, right — the one place the site breaks its greyscale, on purpose */
+.tm-bubble--them {
+  align-self: flex-end;
+  border-bottom-right-radius: 6px;
+  background: #0b6bff;
+  color: #fff;
+}
+
+.tm-bubble.is-italic {
+  font-style: italic;
+}
+
+/* typing indicator */
+.tm-typing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 14px;
+}
+
+.tm-typing i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-faint);
+  animation: tm-typing 1.2s ease-in-out infinite;
+}
+
+.tm-typing i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.tm-typing i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes tm-typing {
+  0%,
+  60%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+/* ---------- composer ---------- */
+.tm-composer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tm-icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: var(--text-dim);
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.tm-icon:hover {
+  color: var(--text);
+  background: var(--glass-fill-strong);
+}
+
+.tm-icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+.tm-field {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  gap: 6px;
+  padding: 4px 4px 4px 14px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-full);
+  background: var(--glass-fill);
+}
+
+.tm-field:focus-within {
+  border-color: var(--text-faint);
+}
+
+.tm-field input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: clamp(14px, 0.8vw, 17px);
+}
+
+.tm-field input::placeholder {
+  color: var(--text-faint);
+}
+
+.tm-field input:focus {
+  outline: none;
+}
+
+.tm-field input:disabled {
+  color: var(--text-faint);
+}
+
+.tm-field button {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #0b6bff;
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.tm-field button:disabled {
+  background: var(--glass-fill-strong);
+  color: var(--text-faint);
+  cursor: default;
+}
+
+.tm-field button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.tm-note,
+.tm-error {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-faint);
+}
+
+.tm-note a {
+  color: var(--silver);
+  text-decoration: underline;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tm-typing i {
+    animation: none;
+  }
+}

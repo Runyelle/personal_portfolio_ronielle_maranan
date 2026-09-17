@@ -126,6 +126,41 @@ export const projects = [
   },
 ];
 
+// "What I'm bout." card on the Showcase's Outside Work slide.
+// Each paragraph is a list of plain strings and { strong } highlights.
+export const bout = [
+  {
+    label: 'What I do now',
+    body: [
+      "I'm a Software Engineer Intern at ",
+      { strong: 'Leidos' },
+      ", building for NASA's Cargo Mission Contract, and I take on ",
+      { strong: 'freelance full-stack' },
+      ' work on the side. On campus, I handle corporate relations for ',
+      { strong: 'CougarCS' },
+      '.',
+    ],
+  },
+  {
+    label: "Where I'm at now",
+    body: [
+      "I'm in ",
+      { strong: 'Houston' },
+      ", studying at the University of Houston where I learned how to code and not code (Thanks Claude). When I'm not studying or working on a project, I'm probably eating food, queueing Overwatch, listening to something on Spotify, or coming up with a new idea as I watch the paint on my ceiling peel.",
+    ],
+  },
+  {
+    label: "What I'm looking for",
+    body: [
+      'Teams building ',
+      { strong: 'full-stack products' },
+      ' and ',
+      { strong: 'cloud systems' },
+      ' people actually use — somewhere I can collaborate, experiment, and turn code into real impact.',
+    ],
+  },
+];
+
 export const navLinks = [
   { href: '#about', label: 'About' },
   { href: '#work', label: 'Work' },

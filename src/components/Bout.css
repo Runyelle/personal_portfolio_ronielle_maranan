@@ -1,0 +1,46 @@
+/* ============ What I'm bout — bio card ============
+   Left column of the Showcase's Outside Work slide. Uses the global .glass
+   utility; the Spotify / Overwatch / Rein cards stack to its right. */
+
+.bout {
+  display: flex;
+  flex-direction: column;
+  /* the copy is shorter than the card on tall screens — centre it rather than
+     leaving a block of empty glass under it */
+  justify-content: center;
+  gap: clamp(14px, 1.9vh, 26px);
+  padding: clamp(22px, 3vh, 44px) clamp(22px, 2.2vw, 44px);
+}
+
+.bout-title {
+  margin: 0;
+  padding-bottom: clamp(12px, 2vh, 20px);
+  border-bottom: 1px solid var(--glass-border);
+  font-weight: 700;
+  font-size: clamp(23px, 1.7vw, 38px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.bout-label {
+  margin: 0 0 8px;
+  font-weight: 400;
+  font-size: clamp(11px, 0.55vw, 13px);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  /* --text-faint disappears at this size on glass */
+  color: var(--silver-dim);
+}
+
+.bout-text {
+  margin: 0;
+  font-size: clamp(14.5px, 1vw, 21px);
+  line-height: 1.7;
+  color: var(--text-dim);
+}
+
+.bout-text strong {
+  font-weight: 600;
+  color: var(--text);
+}

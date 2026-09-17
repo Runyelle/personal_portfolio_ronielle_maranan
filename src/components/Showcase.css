@@ -94,64 +94,65 @@
   gap: 14px;
 }
 
-/* Outside Work panel: Spotify + Overwatch cards share the slide — side by
-   side on wide screens, stacked below that. Trimmed padding like the Food
-   Album panel so two cards fit in the 100vh they're given */
+/* Outside Work panel: "What I'm bout." bio on the left, the Spotify /
+   Overwatch / Rein cards stacked on the right (bento-style). Trimmed padding
+   like the Food Album panel so everything fits in the 100vh it's given */
 .panel--outside {
-  padding-top: 72px;
-  padding-bottom: 72px;
-  gap: 28px;
+  padding-top: clamp(32px, 5.5vh, 64px);
+  padding-bottom: clamp(32px, 5.5vh, 64px);
 }
 
-.outside-grid {
+.outside-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 24px;
+  gap: 16px;
   width: 100%;
-  max-width: 1280px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-@media (min-width: 1100px) {
-  .outside-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+.outside-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* the chat card only joins this slide when the 2×2 grid below kicks in —
+   on smaller screens there's no room for it and it lives in Contact only */
+.outside-cards .tm {
+  display: none;
+}
+
+@media (min-width: 820px) {
+  .outside-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(16px, 1.6vw, 22px);
   }
 
-  /* both cards take the row's height so their edges line up */
-  .outside-grid .np-card,
-  .outside-grid .ow-card {
-    height: 100%;
-  }
-
-  /* half-width column: shrink the album art so the track text keeps room */
-  .outside-grid .np-art {
-    width: clamp(120px, 11vw, 190px);
+  /* the Rein card soaks up whatever height the bio column leaves */
+  .outside-cards .rein {
+    flex: 1;
   }
 }
 
-/* stacked cards on a short landscape screen (e.g. an iPad at 1024×768):
-   tighten everything so both still fit in the 100vh slide */
-@media (min-width: 820px) and (max-width: 1099px) and (max-height: 860px) {
-  .showcase.is-scroll-driven .panel--outside {
-    padding-top: 48px;
-    padding-bottom: 48px;
-    gap: 20px;
+/* tall enough for a fourth card: the chat joins the stack, and the Rein card
+   gives up its stretch to it. Below this the slide keeps three cards and the
+   chat is reachable in the Contact section instead. */
+@media (min-width: 1180px) and (min-height: 820px) {
+  .outside-cards .tm {
+    /* room for the opening three messages, so the hook isn't scrolled away —
+       and more of the conversation on a tall screen */
+    --tm-thread-max: clamp(185px, 20vh, 300px);
+    display: flex;
   }
-  .showcase.is-scroll-driven .outside-grid {
-    gap: 16px;
-  }
-  .showcase.is-scroll-driven .outside-grid .np-card,
-  .showcase.is-scroll-driven .outside-grid .ow-card {
-    padding: 20px 24px;
-  }
-  .showcase.is-scroll-driven .outside-grid .np-art {
-    width: 120px;
-  }
-  .showcase.is-scroll-driven .outside-grid .ow-card {
-    gap: 16px;
-  }
-  .showcase.is-scroll-driven .outside-grid .ow-stat {
+
+  /* the Rein card gives its slack to the chat card */
+  .outside-cards .rein {
     min-height: 0;
-    padding: 10px 14px;
+  }
+
+  .outside-cards .rein-frame {
+    min-height: 40px;
   }
 }
 
@@ -161,15 +162,48 @@
   .panel-projects {
     flex-direction: row;
     align-items: center;
-    justify-content: flex-start;
-    gap: clamp(40px, 5vw, 80px);
+    /* centred, so the leftover width sits either side of the row instead of
+       pooling to the right of the cards */
+    justify-content: center;
+    gap: clamp(40px, 4vw, 90px);
   }
   .panel-projects .panel-head {
     flex: 0 0 auto;
-    max-width: 320px;
+    max-width: clamp(320px, 20vw, 420px);
   }
   .panel-projects .project-grid {
+    flex: 1 1 auto;
     margin: 0;
+  }
+}
+
+@media (max-height: 1200px) {
+  .showcase.is-scroll-driven .panel-projects {
+    padding-top: clamp(40px, 7vh, 100px);
+    padding-bottom: clamp(40px, 7vh, 100px);
+  }
+}
+
+/* the blurb gives up a line at a time as the slide gets shorter */
+@media (max-height: 900px) {
+  .showcase.is-scroll-driven .panel-projects .project-card p {
+    -webkit-line-clamp: 5;
+  }
+}
+
+@media (max-height: 820px) {
+  .showcase.is-scroll-driven .panel-projects {
+    padding-top: clamp(28px, 5vh, 80px);
+    padding-bottom: clamp(28px, 5vh, 80px);
+  }
+  .showcase.is-scroll-driven .panel-projects .project-card p {
+    -webkit-line-clamp: 4;
+  }
+}
+
+@media (max-height: 800px) {
+  .showcase.is-scroll-driven .panel-projects .project-card p {
+    -webkit-line-clamp: 3;
   }
 }
 
@@ -179,9 +213,9 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-content: center;
   justify-content: center;
-  gap: 22px;
+  gap: clamp(18px, 1.4vw, 26px);
   width: 100%;
-  max-width: 760px;
+  max-width: min(1150px, 100%);
   margin: 0 auto;
 }
 
@@ -193,21 +227,21 @@
   background: var(--glass-fill);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  padding: 28px 26px;
-  min-height: 240px;
+  padding: clamp(22px, 1.8vw, 34px) clamp(20px, 1.7vw, 32px);
+  min-height: clamp(150px, 22vh, 250px);
 }
 
 .project-card h3 {
   font-family: 'Bricolage Grotesque', sans-serif;
   font-weight: 700;
-  font-size: 17px;
+  font-size: clamp(16px, 1.05vw, 23px);
   line-height: 1.25;
   margin: 0 0 12px;
   color: var(--text);
 }
 
 .project-card p {
-  font-size: 13px;
+  font-size: clamp(13px, 0.82vw, 17px);
   line-height: 1.62;
   color: var(--text-dim);
   margin: 0 0 20px;

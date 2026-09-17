@@ -46,6 +46,14 @@
   background: #ffffff;
 }
 
+/* the chat card, just below the "Get in touch" circle */
+.contact-chat {
+  --tm-thread-max: 300px;
+  max-width: 620px;
+  margin: 44px auto 0;
+  text-align: left;
+}
+
 .social-row {
   display: flex;
   justify-content: center;
