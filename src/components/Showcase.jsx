@@ -3,6 +3,7 @@ import { projects } from '../data/content.js';
 import { useMediaQuery } from '../hooks/useMediaQuery.js';
 import FoodAlbum from './FoodAlbum.jsx';
 import NowPlaying from './NowPlaying.jsx';
+import OverwatchStats from './OverwatchStats.jsx';
 import './Showcase.css';
 
 // map every project screenshot by its file name (no extension)
@@ -230,13 +231,16 @@ export default function Showcase() {
             <FoodAlbum fitHeight={scrollDriven} />
           </div>
 
-          {/* Panel 3 — Outside Work (Spotify) */}
-          <div className="panel" ref={setPanel(2)}>
+          {/* Panel 3 — Outside Work (Spotify + Overwatch 2) */}
+          <div className="panel panel--outside" ref={setPanel(2)}>
             <div className="panel-head">
               <span className="section-label">Also</span>
               <h2 className="panel-title display">Outside Work.</h2>
             </div>
-            <NowPlaying />
+            <div className="outside-grid">
+              <NowPlaying />
+              <OverwatchStats />
+            </div>
           </div>
         </div>
 

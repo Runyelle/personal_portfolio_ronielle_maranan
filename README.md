@@ -39,10 +39,13 @@ src/
     NavLinks.jsx  / .css     # fixed top-right nav links
     Hero.jsx      / .css     # hero words + cursor-following speech bubble (tap fallback on touch)
     About.jsx     / .css     # minimalist about statement
-    Showcase.jsx  / .css     # scroll-driven horizontal section: projects / food / rein clips
+    Showcase.jsx  / .css     # scroll-driven horizontal section: projects / food / Spotify / Overwatch
+    OverwatchStats.jsx / .css # Overwatch 2 career card, fed by api/overwatch.js
     Work.jsx      / .css     # work list + right-anchored glass preview
     Contact.jsx   / .css     # contact panel
     Footer.jsx    / .css     # footer
+api/
+  overwatch.js               # Vercel function: OverFast API → trimmed data for the Overwatch card
 ```
 
 The original design lives in `ronielle-portfolio-glass.html` for reference.

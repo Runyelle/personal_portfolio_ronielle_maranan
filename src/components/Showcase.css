@@ -94,6 +94,67 @@
   gap: 14px;
 }
 
+/* Outside Work panel: Spotify + Overwatch cards share the slide — side by
+   side on wide screens, stacked below that. Trimmed padding like the Food
+   Album panel so two cards fit in the 100vh they're given */
+.panel--outside {
+  padding-top: 72px;
+  padding-bottom: 72px;
+  gap: 28px;
+}
+
+.outside-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  width: 100%;
+  max-width: 1280px;
+}
+
+@media (min-width: 1100px) {
+  .outside-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* both cards take the row's height so their edges line up */
+  .outside-grid .np-card,
+  .outside-grid .ow-card {
+    height: 100%;
+  }
+
+  /* half-width column: shrink the album art so the track text keeps room */
+  .outside-grid .np-art {
+    width: clamp(120px, 11vw, 190px);
+  }
+}
+
+/* stacked cards on a short landscape screen (e.g. an iPad at 1024×768):
+   tighten everything so both still fit in the 100vh slide */
+@media (min-width: 820px) and (max-width: 1099px) and (max-height: 860px) {
+  .showcase.is-scroll-driven .panel--outside {
+    padding-top: 48px;
+    padding-bottom: 48px;
+    gap: 20px;
+  }
+  .showcase.is-scroll-driven .outside-grid {
+    gap: 16px;
+  }
+  .showcase.is-scroll-driven .outside-grid .np-card,
+  .showcase.is-scroll-driven .outside-grid .ow-card {
+    padding: 20px 24px;
+  }
+  .showcase.is-scroll-driven .outside-grid .np-art {
+    width: 120px;
+  }
+  .showcase.is-scroll-driven .outside-grid .ow-card {
+    gap: 16px;
+  }
+  .showcase.is-scroll-driven .outside-grid .ow-stat {
+    min-height: 0;
+    padding: 10px 14px;
+  }
+}
+
 /* Projects panel: heading sits as a vertically-centered left column,
    the card grid to its right */
 @media (min-width: 900px) {

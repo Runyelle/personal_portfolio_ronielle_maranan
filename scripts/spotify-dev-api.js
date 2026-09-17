@@ -16,23 +16,10 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { loadEnv } from 'vite';
 import spotifyHandler from '../api/spotify.js';
+import { withVercelHelpers } from './vercel-dev-helpers.js';
 
 const DEFAULT_REDIRECT_URI = 'http://127.0.0.1:5173/callback';
 const SCOPES = 'user-read-currently-playing user-read-recently-played';
-
-// Vercel's Node runtime adds res.status()/res.json(); connect's res doesn't
-function withVercelHelpers(res) {
-  res.status = (code) => {
-    res.statusCode = code;
-    return res;
-  };
-  res.json = (body) => {
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(body));
-    return res;
-  };
-  return res;
-}
 
 function saveRefreshToken(root, token) {
   const file = path.join(root, '.env.local');
