@@ -5,10 +5,8 @@
   "type": "module",
   "scripts": {
     "gen:food-thumbs": "node scripts/generate-food-thumbnails.mjs",
-    "predev": "npm run gen:food-thumbs",
-    "prebuild": "npm run gen:food-thumbs",
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "npm run gen:food-thumbs && vite",
+    "build": "npm run gen:food-thumbs && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
