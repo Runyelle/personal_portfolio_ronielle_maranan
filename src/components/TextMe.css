@@ -25,6 +25,11 @@
   scrollbar-color: var(--glass-border) transparent;
 }
 
+/* before the conversation opens up, the whole thread reads as a tap target */
+.tm-thread.is-waiting {
+  cursor: pointer;
+}
+
 .tm-bubble {
   max-width: 82%;
   margin: 0;
@@ -132,6 +137,10 @@
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-full);
   background: var(--glass-fill);
+}
+
+.tm-field.is-waiting {
+  cursor: pointer;
 }
 
 .tm-field:focus-within {

@@ -1,5 +1,9 @@
 :root {
   --bg: #08080a;
+  /* how gray the page gets at mid-scroll */
+  --gray: #212121;
+  /* 0 -> 1 -> 0 as the page scrolls; set by useScrollTint */
+  --gray-t: 0;
   --bg-2: #0e0e11;
   /* metallic accents — kept as --cyan / --violet so component rules
      don't need renaming; both now read as faded silver */
@@ -30,6 +34,13 @@ html {
 body {
   margin: 0;
   background: var(--bg);
+  /* rides the same curve as the backdrop so overscroll matches the page;
+     lands on --gray (#212121) at the peak */
+  background: rgb(
+    calc(8 + 25 * var(--gray-t))
+    calc(8 + 25 * var(--gray-t))
+    calc(10 + 23 * var(--gray-t))
+  );
   color: var(--text);
   font-family: 'Manrope', sans-serif;
   -webkit-font-smoothing: antialiased;

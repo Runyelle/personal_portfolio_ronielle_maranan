@@ -1,0 +1,229 @@
+/* ============ Project phone — hover preview device ============
+   Right-hand column of the Showcase's Projects panel. Hovering a project card
+   swaps what the phone is "running". The frame is drawn by react-device-mockup;
+   the screen below is a small app UI, deliberately its own dark surface rather
+   than the site's glass. */
+
+.pp-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* a fixed basis, so measuring the stage doesn't feed the phone's own width
+     back into the fit calculation */
+  flex: 0 0 clamp(280px, 22vw, 470px);
+  align-self: stretch;
+  min-height: 0;
+}
+
+/* the mockup draws its frame with an inline border we can't reach from CSS,
+   so the rim-light and ambient shadow live on this wrapper, which hugs it */
+.pp-device {
+  position: relative;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.16),
+    0 8px 24px rgba(0, 0, 0, 0.45),
+    0 36px 80px rgba(0, 0, 0, 0.55);
+}
+
+.pp-screen {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  background: #0d0d10;
+  color: #e9eaee;
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow: hidden;
+}
+
+/* ---------- status bar ---------- */
+.pp-statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+  padding: 14px 28px 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: #e9eaee;
+}
+
+.pp-statusbar-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pp-signal,
+.pp-battery {
+  display: block;
+  border-radius: 2px;
+  background: #e9eaee;
+}
+
+.pp-signal {
+  width: 16px;
+  height: 10px;
+  clip-path: polygon(0 100%, 0 70%, 30% 70%, 30% 100%, 35% 100%, 35% 45%, 65% 45%, 65% 100%, 70% 100%, 70% 0, 100% 0, 100% 100%);
+}
+
+.pp-battery {
+  width: 22px;
+  height: 11px;
+  border-radius: 3px;
+  opacity: 0.9;
+}
+
+/* ---------- app ---------- */
+.pp-app {
+  display: flex;
+  flex-direction: column;
+  /* centred: the screen is taller than the content, and a top-anchored block
+     leaves a void under the links */
+  justify-content: center;
+  flex: 1;
+  min-height: 0;
+  padding-bottom: 6%;
+  animation: pp-in 0.35s ease;
+}
+
+@keyframes pp-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.pp-shot {
+  position: relative;
+  flex: none;
+  margin: 10px 16px 0;
+  aspect-ratio: 16 / 10;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #17171c;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* every shot is stacked and cross-faded, so a project with two screenshots
+   dissolves between them instead of snapping */
+.pp-shot img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.pp-shot img.is-on {
+  opacity: 1;
+}
+
+.pp-body {
+  display: flex;
+  flex-direction: column;
+  /* not flex:1 — the shot + body group is what gets centred in the screen */
+  flex: none;
+  min-height: 0;
+  padding: 18px 20px 0;
+}
+
+.pp-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #6d707a;
+}
+
+.pp-name {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  font-size: 21px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 10px 0 0;
+}
+
+.pp-blurb {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #9a9da6;
+}
+
+/* the stack, listed under the description */
+.pp-tech {
+  margin: 16px 0 0;
+}
+
+.pp-tech-head {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #6d707a;
+}
+
+.pp-tech ul {
+  margin: 7px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pp-tech li {
+  font-size: 13px;
+  line-height: 1.55;
+  color: #c9ccd3;
+}
+
+.pp-links {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0 0;
+}
+
+.pp-pill {
+  padding: 7px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 12px;
+  color: #e9eaee;
+}
+
+.pp-pill--live {
+  background: #e9eaee;
+  color: #0d0d10;
+}
+
+/* home indicator */
+.pp-home {
+  flex: none;
+  width: 34%;
+  height: 5px;
+  margin: 12px auto 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pp-app {
+    animation: none;
+  }
+
+  .pp-shot img {
+    transition: none;
+  }
+}

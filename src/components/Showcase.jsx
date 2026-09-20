@@ -5,6 +5,7 @@ import Bout from './Bout.jsx';
 import FoodAlbum from './FoodAlbum.jsx';
 import NowPlaying from './NowPlaying.jsx';
 import OverwatchStats from './OverwatchStats.jsx';
+import ProjectPhone from './ProjectPhone.jsx';
 import ReinClips from './ReinClips.jsx';
 import TextMe from './TextMe.jsx';
 import './Showcase.css';
@@ -27,8 +28,7 @@ const projectsWithShots = projects.map((p) => ({
     .filter(Boolean),
 }));
 
-const PREVIEW_W = 360;
-const FADE_INTERVAL = 2200; // ms each image is held before cross-fading
+const FADE_INTERVAL = 2200; // ms each shot is held before the next one
 
 function GithubIcon() {
   return (
@@ -56,9 +56,8 @@ export default function Showcase() {
   const canHover = useMediaQuery('(hover: hover)');
   const scrollDriven = wideEnough && !reduceMotion;
 
-  // cursor-anchored screenshot preview
-  const [hover, setHover] = useState(null); // { name, shots }
-  const [pos, setPos] = useState({ x: 0, y: 0 });
+  // the project the phone is showing (null = nothing hovered yet)
+  const [hovered, setHovered] = useState(null);
   const [frame, setFrame] = useState(0);
 
   // reversible: fades the whole showcase as it scrolls in and back out
@@ -70,36 +69,21 @@ export default function Showcase() {
     panelRefs.current[i] = el;
   };
 
-  const place = (e) => {
-    let x = e.clientX + 24;
-    if (x + PREVIEW_W > window.innerWidth - 12) {
-      x = e.clientX - 24 - PREVIEW_W;
-    }
-    const y = Math.min(Math.max(e.clientY, 150), window.innerHeight - 150);
-    setPos({ x, y });
-  };
-
-  const handleEnter = (e, p) => {
-    if (!canHover || !p.shots.length) return;
+  const handleEnter = (p) => {
+    if (!canHover) return;
     setFrame(0);
-    setHover({ name: p.name, shots: p.shots });
-    place(e);
+    setHovered(p);
   };
 
-  const handleMove = (e) => {
-    if (hover) place(e);
-  };
+  // the phone falls back to the first project, so it's never an empty frame
+  const shown = hovered || projectsWithShots[0];
 
-  const handleLeave = () => setHover(null);
-
+  // projects with several screenshots cycle through them while hovered
   useEffect(() => {
-    if (!hover || hover.shots.length < 2) return;
-    const id = setInterval(
-      () => setFrame((f) => (f + 1) % hover.shots.length),
-      FADE_INTERVAL
-    );
+    if (shown.shots.length < 2) return undefined;
+    const id = setInterval(() => setFrame((f) => (f + 1) % shown.shots.length), FADE_INTERVAL);
     return () => clearInterval(id);
-  }, [hover]);
+  }, [shown]);
 
   // fade the section in/out as it enters and leaves the viewport (reversible)
   useEffect(() => {
@@ -182,6 +166,9 @@ export default function Showcase() {
       className={`showcase${scrollDriven ? ' is-scroll-driven' : ''}${
         sectionVisible ? ' is-visible' : ''
       }`}
+      /* while pinned this section eats scroll sideways, so the background
+         tint holds steady across it instead of drifting (see useScrollTint) */
+      data-tint-hold={scrollDriven ? '' : undefined}
     >
       <div className="showcase-sticky">
         <div className="showcase-track" ref={trackRef}>
@@ -195,13 +182,28 @@ export default function Showcase() {
               {projectsWithShots.map((p) => (
                 <article
                   key={p.name}
-                  className="project-card"
-                  onMouseEnter={(e) => handleEnter(e, p)}
-                  onMouseMove={handleMove}
-                  onMouseLeave={handleLeave}
+                  className={`project-card${shown.name === p.name && hovered ? ' is-active' : ''}`}
+                  onMouseEnter={() => handleEnter(p)}
+                  onFocus={() => handleEnter(p)}
                 >
+                  <div className="project-tags">
+                    <span className="project-tag mono">{p.tag}</span>
+                    {p.live && (
+                      <span className="project-tag project-tag--live mono">
+                        <i aria-hidden="true" />
+                        Live
+                      </span>
+                    )}
+                  </div>
                   <h3>{p.name}</h3>
-                  <p>{p.blurb}</p>
+                  <dl className="project-detail">
+                    {p.details.map(([label, value]) => (
+                      <div key={label}>
+                        <dt className="mono">{label}</dt>
+                        <dd>{value}</dd>
+                      </div>
+                    ))}
+                  </dl>
                   <div className="project-links">
                     <a
                       className="project-icon"
@@ -227,6 +229,8 @@ export default function Showcase() {
                 </article>
               ))}
             </div>
+
+            <ProjectPhone project={shown} frame={frame} isHovered={Boolean(hovered)} />
           </div>
 
           {/* Panel 2 — Food Album */}
@@ -249,21 +253,6 @@ export default function Showcase() {
         </div>
 
         <div className="showcase-hint mono">scroll →</div>
-      </div>
-
-      <div
-        className={`project-preview${hover ? ' show' : ''}`}
-        style={{ left: pos.x, top: pos.y, width: PREVIEW_W }}
-        aria-hidden="true"
-      >
-        {hover?.shots.map((src, i) => (
-          <img
-            key={src}
-            src={src}
-            alt=""
-            className={i === frame ? 'on' : ''}
-          />
-        ))}
       </div>
     </section>
   );

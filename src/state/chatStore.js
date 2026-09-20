@@ -12,9 +12,12 @@ const REPLY_MS = 700; // beat before the scripted "Sounds good" reply
 
 // from: 'me' = Ronielle (left, grey), 'them' = the visitor (right, blue)
 // ask: pause here and wait for the visitor to type; the answer is saved under this key
+// gate: pause here until the visitor taps into the card — the opener plays on its
+//   own, but nothing asks them anything until they show up
 export const SCRIPT = [
   { from: 'me', text: 'Want to work together? Just wanna chat? Hit me up (no nonchalant).' },
   { from: 'them', text: 'Sounds good 👍' },
+  { gate: true },
   { from: 'me', text: "What's your name?" },
   { ask: true, key: 'name', placeholder: 'Your name' },
   { from: 'me', text: 'Nice to meet you 👋' },
@@ -38,6 +41,7 @@ let state = {
   messages: [], // { id, from, text, italic }
   typing: false, // show the "..." bubble
   ask: null, // the SCRIPT step waiting on an answer, or null
+  waiting: false, // parked on a gate — waiting for a tap on the card
   answers: {},
   done: false, // conversation finished — locked until a refresh
   sendError: false, // the email didn't go through; the card offers a fallback
@@ -78,6 +82,11 @@ function run() {
     return;
   }
 
+  if (current.gate) {
+    emit({ waiting: true, typing: false });
+    return;
+  }
+
   if (current.ask) {
     emit({ ask: current, typing: false });
     return;
@@ -104,6 +113,14 @@ function run() {
 export function start() {
   if (started) return;
   started = true;
+  run();
+}
+
+// the visitor tapped the thread or the composer — step past the gate they're parked on
+export function engage() {
+  if (!state.waiting) return;
+  emit({ waiting: false });
+  step += 1;
   run();
 }
 

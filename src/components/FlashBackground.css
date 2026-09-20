@@ -34,3 +34,33 @@
     ),
     rgba(8, 8, 10, 0.2);
 }
+
+/* ---------- scroll-linked gray floor ----------
+   --gray-t runs 0 -> 1 -> 0 down the page (see useScrollTint), so the page
+   sits black at the top, greys out through the middle, and returns to black
+   at the bottom — and back again on the way up.
+
+   `lighten` raises the dark parts of the backdrop to --gray and leaves
+   anything already brighter untouched, so this can only ever lift blacks
+   toward #212121. Text contrast is therefore bounded: the brightest pixel
+   behind any copy is the same as it was before this layer existed. A plain
+   translucent wash would instead scale the whole range up and wash out the
+   dim text. It sits below .grain and all content (z-index 2), so nothing in
+   the foreground is blended. */
+.scroll-tint {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: var(--gray);
+  mix-blend-mode: lighten;
+  opacity: var(--gray-t, 0);
+}
+
+/* no blend support — fall back to a wash faint enough to stay legible */
+@supports not (mix-blend-mode: lighten) {
+  .scroll-tint {
+    mix-blend-mode: normal;
+    opacity: calc(0.55 * var(--gray-t, 0));
+  }
+}

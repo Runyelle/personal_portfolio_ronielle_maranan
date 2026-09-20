@@ -1,5 +1,6 @@
 import FlashBackground from './components/FlashBackground.jsx';
 import Ambient from './components/Ambient.jsx';
+import Brand from './components/Brand.jsx';
 import NavLinks from './components/NavLinks.jsx';
 import Hero from './components/Hero.jsx';
 import About from './components/About.jsx';
@@ -14,6 +15,7 @@ export default function App() {
       <FlashBackground />
       <Ambient />
       <div className="grain" />
+      <Brand />
       <NavLinks />
       <Hero />
       <main>

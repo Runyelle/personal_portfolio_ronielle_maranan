@@ -60,6 +60,24 @@ function formatDetailDate(iso) {
   return `${day}  ${time}`;
 }
 
+function WifiIcon() {
+  return (
+    <svg viewBox="0 0 16 12" fill="currentColor" aria-hidden="true">
+      <path d="M8 11.2 6.1 9.1a2.6 2.6 0 0 1 3.8 0L8 11.2zM4.6 7.5A5 5 0 0 1 8 6.2c1.3 0 2.5.5 3.4 1.3l1.2-1.3A6.8 6.8 0 0 0 8 4.4c-1.8 0-3.4.7-4.6 1.8l1.2 1.3zM1.9 4.6A8.9 8.9 0 0 1 8 2.3c2.4 0 4.5.9 6.1 2.3l1.2-1.3A10.6 10.6 0 0 0 8 .6C5 .6 2.3 1.7.7 3.3l1.2 1.3z" />
+    </svg>
+  );
+}
+
+function BatteryIcon() {
+  return (
+    <svg viewBox="0 0 26 12" fill="none" aria-hidden="true">
+      <rect x="0.6" y="0.6" width="21" height="10.8" rx="3" stroke="currentColor" strokeOpacity="0.4" strokeWidth="1.1" />
+      <rect x="2.1" y="2.1" width="18" height="7.8" rx="1.8" fill="currentColor" />
+      <path d="M23.4 4.3v3.4a2 2 0 0 0 0-3.4z" fill="currentColor" fillOpacity="0.4" />
+    </svg>
+  );
+}
+
 // static — mirrors the macOS/iPadOS Photos sidebar, not wired to anything
 const SIDEBAR_ITEMS = [
   { label: 'All Photos', icon: '▣', active: true },
@@ -283,6 +301,18 @@ export default function FoodAlbum({ fitHeight = false }) {
               className="fa-screen"
               style={{ width: screenWidth / zoom, height: screenHeight / zoom, zoom }}
             >
+              <div className="fa-statusbar">
+                <span className="fa-statusbar-left">
+                  <b>9:41&nbsp;AM</b>
+                  <span>Mon Jun 22</span>
+                </span>
+                <span className="fa-statusbar-right">
+                  <WifiIcon />
+                  <span>100%</span>
+                  <BatteryIcon />
+                </span>
+              </div>
+
               <div className="fa-app">
                 <aside className="fa-sidebar">
                   <div className="fa-sidebar-head">
@@ -423,6 +453,7 @@ export default function FoodAlbum({ fitHeight = false }) {
                   </div>
                 )}
               </div>
+              <div className="fa-home" aria-hidden="true" />
             </div>
           </IPadMockup>
         </DeviceTilt>

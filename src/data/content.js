@@ -76,6 +76,14 @@ export const campus = [
 export const projects = [
   {
     name: 'Estacado Energy Well Portfolio Article',
+    tag: 'Case competition',
+    details: [
+      ['Frontend', 'React + TypeScript, on Vercel'],
+      ['Format', 'Data-journalism article, sticky 01–05 nav'],
+      ['Methods', 'Well efficiency scoring, HSE correlation, 5-yr decline forecast'],
+      ['Backend', 'None — the analysis runs in the app'],
+    ],
+    tech: ['React', 'TypeScript', 'Vercel'],
     blurb:
       'A website presented in article form for a ConocoPhillips case competition, analyzing a well portfolio using real production, financial, and safety data. Answers judge questions on production efficiency, HSE risk, and which wells to keep, sell, or invest in.',
     url: 'https://github.com/Gurshaan159/React_presentatoin',
@@ -85,6 +93,15 @@ export const projects = [
   },
   {
     name: 'PenguinPipe',
+    tag: 'Hackathon · TIDALHACK 2026',
+    details: [
+      ['Backend', 'Python + FastAPI'],
+      ['Frontend', 'Next.js dashboard'],
+      ['ML', 'Random Forest growth prediction, ROC AUC 0.95'],
+      ['Methods', 'Multi-year ILI alignment, interaction-zone detection'],
+      ['AI', 'Gemini chat over the results'],
+    ],
+    tech: ['Python', 'FastAPI', 'Next.js', 'Random Forest', 'Gemini API'],
     blurb:
       'Pipeline inspection analysis system built at TIDALHACK 2026 that tracks corrosion growth across years of inspection data and flags high-risk zones. Uses a Random Forest model for prediction plus a Gemini-powered chat assistant for querying results.',
     url: 'https://github.com/sart-haker/tidal26',
@@ -93,6 +110,14 @@ export const projects = [
   },
   {
     name: 'FlyBetter.ai',
+    tag: 'Hackathon · TAMUhack 2026',
+    details: [
+      ['Backend', 'Node.js + Express + MongoDB'],
+      ['Frontend', 'Next.js + TypeScript'],
+      ['AI', 'Gemini itinerary planning'],
+      ['Voice', 'ElevenLabs phone-call bookings'],
+    ],
+    tech: ['Node.js', 'Express', 'MongoDB', 'Next.js', 'TypeScript', 'Gemini', 'ElevenLabs'],
     blurb:
       'AI travel planning platform built at TAMUhack 2026 that turns natural-language requests into full itineraries with real flight, hotel, and restaurant data. Also supports phone bookings through an ElevenLabs-powered voice assistant.',
     url: 'https://github.com/maybiiLen/TAMU-Hack-26',
@@ -101,6 +126,15 @@ export const projects = [
   },
   {
     name: 'Smart Playlist App',
+    tag: 'Personal project',
+    details: [
+      ['Frontend', 'Next.js + Tailwind CSS'],
+      ['Backend', 'Node.js + Express'],
+      ['Auth', 'Spotify OAuth (PKCE)'],
+      ['AI', 'fal.ai Stable Audio transitions'],
+      ['Storage', 'Local cache, no DB'],
+    ],
+    tech: ['Next.js', 'Tailwind CSS', 'Node.js', 'Express', 'Spotify API', 'fal.ai'],
     blurb:
       "Spotify-integrated app that generates AI transitions between tracks using fal.ai's Stable Audio. Includes OAuth login, a full demo video, and a Spotify-inspired dark theme UI.",
     url: 'https://github.com/Runyelle/Smart-Playlist-App',
@@ -109,6 +143,14 @@ export const projects = [
   },
   {
     name: 'WasteFlow',
+    tag: 'Hackathon build',
+    details: [
+      ['Frontend', 'React/Next.js + Tailwind CSS'],
+      ['Backend', 'Python + FastAPI'],
+      ['Methods', 'AI waste-to-need compatibility matching'],
+      ['Storage', 'Local cache, no DB'],
+    ],
+    tech: ['React', 'Next.js', 'Tailwind CSS', 'Python', 'FastAPI'],
     blurb:
       'Industrial symbiosis prototype that matches waste streams from one company with material needs at another, using AI-assisted compatibility analysis. Built as a hackathon demo with a FastAPI backend and a Next.js/React frontend.',
     url: 'https://github.com/Runyelle/CODERED-ASTRA',
@@ -117,6 +159,12 @@ export const projects = [
   },
   {
     name: '5 Brothers Drafting & Permitting Website',
+    tag: 'Client project',
+    details: [
+      ['Frontend', 'React, static site on AWS S3'],
+      ['Backend', 'Node + Express on EC2, emails the owner'],
+    ],
+    tech: ['React', 'Node.js', 'Express', 'AWS S3', 'AWS EC2'],
     blurb:
       'Full-stack website built for a Houston drafting and permitting business, live at 5brothersdrafting.com. Includes a client-facing site plus a server handling their day-to-day permitting requests.',
     url: 'https://github.com/Runyelle/5-Brothers-Website',

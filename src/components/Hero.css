@@ -3,20 +3,107 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 130px 20px 60px;
+  /* top-aligned: the window's own offsets place it, not flex centring */
+  justify-content: flex-start;
+  padding: var(--hw-top) 20px 60px;
+  /* the gap above the frame — and, mirrored below it, what sets the window's
+     height; growing it shrinks the window evenly from both ends and leaves
+     the words on 50svh */
+  --hw-top: clamp(96px, 15svh, 200px);
+  --hw-bar-h: 38px;
   position: relative;
 }
 
-.hero-tag {
-  align-self: flex-start;
-  margin-left: max(4vw, 20px);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12.5px;
-  color: var(--text-dim);
-  padding: 9px 16px;
+/* ---------- macOS window frame ---------- */
+.hero-window {
+  width: min(1540px, 94vw);
   border-radius: 12px;
-  margin-bottom: 18px;
+  overflow: hidden;
+  background: #0d0d10;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.6), 0 2px 0 rgba(255, 255, 255, 0.04) inset;
+}
+
+.hw-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--hw-bar-h);
+  padding: 0 14px;
+  /* brushed-metal title bar: bright through the middle, darker at the edges */
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0) 60%
+  ),
+  linear-gradient(90deg, #3a3a3d 0%, #8f9095 42%, #a9aaae 52%, #6d6e73 72%, #37373a 100%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.55);
+}
+
+.hw-lights {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hw-light {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.35) inset,
+    0 0 0 0.5px rgba(0, 0, 0, 0.25);
+}
+
+.hw-light.red {
+  background: radial-gradient(circle at 34% 30%, #ff8074, #ec5f52 70%);
+}
+.hw-light.yellow {
+  background: radial-gradient(circle at 34% 30%, #ffd583, #e2ab3e 70%);
+}
+.hw-light.green {
+  background: radial-gradient(circle at 34% 30%, #97e77f, #56c13c 70%);
+}
+
+.hw-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: rgba(18, 18, 22, 0.72);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.28);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.hw-plus {
+  margin-left: auto;
+  font-size: 18px;
+  line-height: 1;
+  color: rgba(28, 28, 32, 0.55);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.hw-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(40px, 7vw, 90px) clamp(18px, 4vw, 56px);
+  /* the words sit dead-centre of the VIEWPORT, not of the window: with the
+     frame's top edge at --hw-top, leaving the same gap below the body puts
+     its centre line on 50svh */
+  min-height: calc(100svh - 2 * (var(--hw-top) + var(--hw-bar-h)));
+  container-type: inline-size;
+  background: radial-gradient(
+      120% 90% at 50% 0%,
+      rgba(255, 255, 255, 0.05),
+      transparent 60%
+    ),
+    #0b0b0e;
 }
 
 .hero-stack {
@@ -26,13 +113,29 @@
   align-items: center;
 }
 
+/* lives in the empty lower half of the window; absolute so it can't push the
+   word stack off the 50svh centre line */
+.hw-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(24px, 7%, 60px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 clamp(18px, 4vw, 56px);
+}
+
 .hero-word {
   font-family: 'Bricolage Grotesque', sans-serif;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: -0.02em;
   line-height: 0.82;
-  font-size: clamp(44px, 12.2vw, 156px);
+  /* sized against the window's inner width so the longest word never
+     overflows the frame; the vw line is the no-container-query fallback */
+  font-size: clamp(40px, 9.4vw, 140px);
+  font-size: min(clamp(40px, 10.4vw, 140px), 11cqw);
   color: rgba(233, 234, 238, 0.42);
   cursor: pointer;
   user-select: none;
@@ -54,9 +157,40 @@
   opacity: 0.62;
 }
 
+/* hover: fine vertical striping in silver/graphite, clipped to the glyphs,
+   with a soft bloom riding over it — the stripes drift slowly sideways */
 .hero-word:hover {
-  color: var(--text);
+  color: transparent;
   transform: scale(1.02);
+  background-image: radial-gradient(
+      58% 130% at 32% 50%,
+      rgba(255, 255, 255, 0.92),
+      rgba(255, 255, 255, 0.18) 42%,
+      rgba(255, 255, 255, 0) 68%
+    ),
+    linear-gradient(
+      90deg,
+      #f4f5f8 0%,
+      #c6c9d1 22%,
+      #82858e 46%,
+      #4c4f57 62%,
+      #9ea2ab 82%,
+      #f4f5f8 100%
+    );
+  background-size: 100% 100%, 17px 100%;
+  background-repeat: no-repeat, repeat;
+  background-position: 0 0, 0 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(0 0 22px rgba(196, 201, 212, 0.22));
+  animation: striate 3.4s linear infinite;
+}
+
+/* one full tile per cycle, so the drift loops seamlessly */
+@keyframes striate {
+  to {
+    background-position: 0 0, 17px 0;
+  }
 }
 
 .hero-word.accent:hover {
@@ -67,13 +201,13 @@
   font-size: 14.5px;
   color: var(--text-faint);
   max-width: 460px;
-  margin: 34px auto 0;
+  margin: 0 auto;
   line-height: 1.7;
   text-align: center;
 }
 
 .hero-scroll {
-  margin-top: 44px;
+  margin-top: 22px;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -96,55 +230,114 @@
   }
 }
 
-/* ---------- speech bubble ---------- */
+/* ---------- hover popup: a miniature of the hero window ---------- */
 .speech-bubble {
-  position: fixed;
+  /* absolute inside .hero (not fixed) so it travels with the page */
+  position: absolute;
   top: 0;
   left: 0;
   z-index: 70;
   pointer-events: none;
-  max-width: 230px;
-  padding: 16px 18px 18px;
-  background: rgba(242, 243, 248, 0.96);
-  border-radius: 18px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  width: 268px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0d0d10;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.62);
+  /* closed state: small, tucked down-left of where it will land, so it
+     unfolds out of its own bottom-left corner the way macOS windows do */
   opacity: 0;
-  transform: scale(0.85) translateY(8px);
+  /* the -100% lifts it above its anchor point, so left/top can address the
+     word's top-right corner directly */
+  transform: translate(-16px, calc(-100% + 24px)) scale(0.56);
   transform-origin: bottom left;
-  transition: opacity 0.16s ease, transform 0.16s ease, left 0.22s ease,
-    top 0.22s ease;
+  will-change: transform, opacity;
+  /* closing is quicker than opening, and accelerates away */
+  transition: opacity 0.12s ease, transform 0.17s cubic-bezier(0.4, 0, 0.9, 1),
+    left 0.22s ease, top 0.22s ease;
 }
 
 .speech-bubble.show {
   opacity: 1;
-  transform: scale(1) translateY(0);
+  transform: translate(0, -100%) scale(1);
+  /* opening: fast off the mark, easing into place with a slight overshoot.
+     Opacity lands well before the transform so it reads as motion, not a fade */
+  transition: opacity 0.1s ease, transform 0.4s cubic-bezier(0.2, 1.16, 0.32, 1),
+    left 0.22s ease, top 0.22s ease;
 }
 
-.speech-bubble::after {
-  content: '';
+.sb-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 9px;
+  background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.06),
+      rgba(255, 255, 255, 0) 60%
+    ),
+    linear-gradient(
+      90deg,
+      #3a3a3d 0%,
+      #8f9095 42%,
+      #a9aaae 52%,
+      #6d6e73 72%,
+      #37373a 100%
+    );
+  border-bottom: 1px solid rgba(0, 0, 0, 0.55);
+}
+
+/* the lights ride the same rules as the big window, just smaller */
+.sb-bar .hw-lights {
+  gap: 6px;
+}
+
+.sb-bar .hw-light {
+  width: 9px;
+  height: 9px;
+}
+
+.sb-title {
   position: absolute;
-  bottom: -8px;
-  left: 26px;
-  width: 16px;
-  height: 16px;
-  background: rgba(242, 243, 248, 0.96);
-  border-radius: 3px;
-  transform: rotate(45deg);
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 62%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.02em;
+  color: rgba(18, 18, 22, 0.72);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 
+.sb-body {
+  padding: 15px 16px 17px;
+  background: radial-gradient(
+      120% 90% at 50% 0%,
+      rgba(255, 255, 255, 0.05),
+      transparent 60%
+    ),
+    #0b0b0e;
+}
+
+/* both lines share the hero words' typeface */
 .sb-line1 {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 500;
   font-size: 13px;
-  color: #3a3c4a;
+  color: var(--text-dim);
   line-height: 1.45;
-  margin-bottom: 6px;
+  margin-bottom: 7px;
 }
 
 .sb-line2 {
   font-family: 'Bricolage Grotesque', sans-serif;
   font-weight: 700;
   font-size: 14.5px;
-  color: #0a0a0f;
+  color: var(--text);
   line-height: 1.35;
 }
 
@@ -157,19 +350,42 @@
   .hero-scroll {
     animation: none;
   }
+  .hero-word:hover {
+    animation: none;
+  }
+  .speech-bubble,
+  .speech-bubble.show {
+    transform: translate(0, -100%);
+    transition: opacity 0.12s ease;
+  }
 }
 
 @media (max-width: 640px) {
+  .hero {
+    --hw-top: clamp(64px, 9svh, 96px);
+    --hw-bar-h: 34px;
+  }
   .hero-word {
-    font-size: clamp(40px, 14vw, 76px);
+    font-size: clamp(34px, 12.4vw, 70px);
     line-height: 0.86;
   }
   .hero-word + .hero-word {
     margin-top: -0.08em;
   }
-  .hero-tag {
-    margin-left: 20px;
-    font-size: 11px;
+  .hw-footer {
+    position: static;
+    padding: 0;
+    margin-top: 36px;
+  }
+  .hw-title {
+    font-size: 10px;
+  }
+  .hw-bar {
+    padding: 0 11px;
+  }
+  .hw-light {
+    width: 10px;
+    height: 10px;
   }
 }
 

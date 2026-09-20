@@ -40,7 +40,55 @@
 /* the app is laid out at a fixed logical width and zoomed to the screen, so
    it scales like a real screenshot instead of reflowing into empty space */
 .fa-screen {
+  display: flex;
   flex: none;
+  flex-direction: column;
+  background: #ffffff;
+}
+
+/* iPadOS status bar + home indicator, so the device reads like a real
+   screenshot rather than an app pasted edge-to-edge */
+.fa-statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+  padding: 7px 22px 5px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif;
+  font-size: 12.5px;
+  color: #1c1c1e;
+  background: #ffffff;
+}
+
+.fa-statusbar-left,
+.fa-statusbar-right {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.fa-statusbar-left b {
+  font-weight: 600;
+}
+
+.fa-statusbar-left span {
+  color: #6b6b70;
+}
+
+.fa-statusbar-right svg {
+  display: block;
+  height: 11px;
+  width: auto;
+}
+
+.fa-home {
+  flex: none;
+  width: 30%;
+  height: 5px;
+  margin: 5px auto 7px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.4);
 }
 
 /* ================================================================
@@ -52,8 +100,9 @@
 .fa-app {
   position: relative;
   display: flex;
+  flex: 1;
+  min-height: 0;
   width: 100%;
-  height: 100%;
   background: #ffffff;
   color: #1c1c1e;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,

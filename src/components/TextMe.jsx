@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react';
-import { answer, getSnapshot, start, subscribe } from '../state/chatStore.js';
+import { answer, engage, getSnapshot, start, subscribe } from '../state/chatStore.js';
 import './TextMe.css';
 
 const EMAIL = 'ron.maranan01@gmail.com';
@@ -38,16 +38,29 @@ export default function TextMe() {
 
   const submit = (e) => {
     e.preventDefault();
+    // still parked on the gate: open it and keep whatever they've typed, so the
+    // draft is ready to send once the question lands
+    if (!chat.ask) {
+      engage();
+      return;
+    }
     const problem = answer(draft);
     setError(problem);
     if (!problem) setDraft('');
   };
 
-  const locked = chat.done || !chat.ask;
+  // waiting on a tap still leaves the field live — tapping it is what opens the gate
+  const locked = chat.done || (!chat.ask && !chat.waiting);
 
   return (
     <article className="tm glass">
-      <div className="tm-thread" ref={threadRef}>
+      {/* the conversation opens on its own but doesn't ask anything until the
+          visitor taps in — anywhere in the thread or the composer counts */}
+      <div
+        className={`tm-thread${chat.waiting ? ' is-waiting' : ''}`}
+        ref={threadRef}
+        onClick={engage}
+      >
         {chat.messages.map((m) => (
           <p key={m.id} className={`tm-bubble tm-bubble--${m.from}${m.italic ? ' is-italic' : ''}`}>
             {m.text}
@@ -85,7 +98,13 @@ export default function TextMe() {
 
         {/* noValidate: the card answers a bad email in the thread's own voice,
             instead of the browser's native validation tooltip */}
-        <form className="tm-field" onSubmit={submit} noValidate>
+        <form
+          className={`tm-field${chat.waiting ? ' is-waiting' : ''}`}
+          onSubmit={submit}
+          onClick={engage}
+          onFocus={engage}
+          noValidate
+        >
           <input
             type={chat.ask?.type === 'email' ? 'email' : 'text'}
             value={draft}
