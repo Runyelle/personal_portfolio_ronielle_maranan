@@ -17,6 +17,22 @@ const FIELDS = ['name', 'topic', 'email', 'extra'];
 
 const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
 
+// Resend wants `email@domain.tld` or `Name <email@domain.tld>` and 422s on
+// anything else — a bare domain in CONTACT_FROM is an easy env typo to make
+const isSender = (value) => {
+  const angled = /^[^<>]*<([^<>]+)>$/.exec(value);
+  return isEmail(angled ? angled[1].trim() : value);
+};
+
+// a mistyped override shouldn't cost a visitor their message: log it and use
+// the built-in default, which is known-good
+const configured = (value, fallback, name, valid) => {
+  if (!value) return fallback;
+  if (valid(value)) return value;
+  console.error(`contact: ${name}="${value}" is not a valid address, using ${fallback}`);
+  return fallback;
+};
+
 // Vercel's Node runtime parses JSON bodies; the plain connect server in dev doesn't
 async function readBody(req) {
   if (req.body && typeof req.body === 'object') return req.body;
@@ -74,8 +90,8 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: CONTACT_FROM || DEFAULT_FROM,
-        to: [CONTACT_TO || DEFAULT_TO],
+        from: configured(CONTACT_FROM, DEFAULT_FROM, 'CONTACT_FROM', isSender),
+        to: [configured(CONTACT_TO, DEFAULT_TO, 'CONTACT_TO', isEmail)],
         reply_to: answers.email,
         subject: `Portfolio chat — ${answers.name}`,
         text: lines.join('\n'),
