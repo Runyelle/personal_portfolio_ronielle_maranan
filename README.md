@@ -58,3 +58,33 @@ api/
 ```
 
 The original design lives in `ronielle-portfolio-glass.html` for reference.
+
+## Contact form email (Resend)
+
+The `<TextMe />` chat card POSTs to `api/contact.js`, which hands the answers to
+Resend. Three environment variables drive it (see `.env.example`):
+
+| Variable | Purpose |
+| --- | --- |
+| `RESEND_API_KEY` | Required. Without it the card still plays but shows a mailto fallback. |
+| `CONTACT_TO` | Inbox that receives the answers. |
+| `CONTACT_FROM` | Sender address. **Must be on a domain verified in Resend.** |
+
+Resend's shared `onboarding@resend.dev` sender is sandbox-only — it delivers
+solely to the address that owns the Resend account and returns **403** for every
+other recipient. Leaving it in place makes the card fail for every visitor, with
+no error visible on the page.
+
+To verify `ronielle.tech` (registered through Vercel, so its DNS is in the same
+dashboard):
+
+1. Resend → **Domains** → **Add Domain** → `ronielle.tech`.
+2. Copy each DKIM/SPF record Resend lists into Vercel → **Domains** →
+   `ronielle.tech` → **DNS Records**.
+3. Wait for the domain to read **Verified** in Resend.
+4. Set `RESEND_API_KEY`, `CONTACT_TO`, and `CONTACT_FROM` in Vercel →
+   **Project Settings** → **Environment Variables**, then redeploy — env changes
+   don't apply to existing deployments.
+
+The mailbox in `CONTACT_FROM` doesn't need to exist; Resend only sends from it.
+Replies route to the visitor via `reply_to`.

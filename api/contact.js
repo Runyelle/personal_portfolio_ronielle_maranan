@@ -2,15 +2,16 @@
 //
 //   RESEND_API_KEY   from https://resend.com (free tier) — required
 //   CONTACT_TO       where to deliver (defaults to my address)
-//   CONTACT_FROM     verified sender; Resend's shared onboarding@resend.dev
-//                    works until you verify your own domain
+//   CONTACT_FROM     sender on a Resend-verified domain. Resend's shared
+//                    onboarding@resend.dev is sandbox-only: it delivers to the
+//                    account owner's address and 403s on everyone else.
 //
 // Replies go to whatever email the visitor typed, so "Reply" in the inbox
 // just works.
 
 const RESEND_URL = 'https://api.resend.com/emails';
 const DEFAULT_TO = 'ron.maranan01@gmail.com';
-const DEFAULT_FROM = 'Portfolio <onboarding@resend.dev>';
+const DEFAULT_FROM = 'Portfolio <hello@ronielle.tech>';
 const MAX_LENGTH = 500;
 const FIELDS = ['name', 'topic', 'email', 'extra'];
 
