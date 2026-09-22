@@ -1,5 +1,6 @@
 import { navLinks } from '../data/content.js';
 import { useMediaQuery } from '../hooks/useMediaQuery.js';
+import resumePdf from '../assets/resume/Resume-8-3-2026.pdf';
 import './NavLinks.css';
 
 /** Document-relative top, walked via offsetTop so the `.reveal` transform
@@ -54,6 +55,9 @@ export default function NavLinks() {
           {link.label}
         </a>
       ))}
+      <a href={resumePdf} target="_blank" rel="noopener noreferrer">
+        Resume
+      </a>
     </nav>
   );
 }
