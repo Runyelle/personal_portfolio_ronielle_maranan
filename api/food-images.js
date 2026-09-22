@@ -93,10 +93,13 @@ async function reverseGeocode(lat, lng, cache) {
       const results = data.results || [];
       const poi = results.find((r) => (r.types || []).includes('point_of_interest'));
       const locality = results.find((r) => (r.types || []).includes('locality'));
+      // address_components[0] is the street number, not the venue name — the
+      // Geocoding API doesn't return POI names as components (that's a Places
+      // API concept), so take the street portion of the formatted address instead.
       result = {
         ok: true,
         label:
-          poi?.address_components?.[0]?.long_name ||
+          poi?.formatted_address?.split(',')[0]?.trim() ||
           locality?.address_components?.[0]?.long_name ||
           results[0]?.formatted_address ||
           null,
