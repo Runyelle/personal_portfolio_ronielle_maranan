@@ -21,7 +21,7 @@ export const heroWords = [
 export const work = [
   {
     role: 'Software Engineer Intern',
-    org: 'Leidos',
+    org: 'National Aeronautics and Space Administration (NASA), Cargo Mission Contract',
     period: 'Apr 2026 — Present',
     current: true,
   },
@@ -180,9 +180,9 @@ export const bout = [
   {
     label: 'What I do now',
     body: [
-      "I'm a Software Engineer Intern at ",
-      { strong: 'Leidos' },
-      ", building for NASA's Cargo Mission Contract, and I take on ",
+      "I'm a Software Engineer Intern, building for",
+      { strong : "NASA's Cargo Mission Contract"},
+      ", and I take on ",
       { strong: 'freelance full-stack' },
       ' work on the side. On campus, I handle corporate relations for ',
       { strong: 'CougarCS' },

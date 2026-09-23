@@ -101,7 +101,7 @@ export default function Hero() {
           <div className="hw-footer">
             <p className="hero-desc">
               CS student at the University of Houston, currently building cloud
-              software for NASA's Cargo Mission Contract via Leidos.
+              software for NASA's Cargo Mission Contract with Leidos.
             </p>
             <div className="hero-scroll">Scroll ↓</div>
           </div>

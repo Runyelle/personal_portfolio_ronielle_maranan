@@ -1,4 +1,5 @@
 import { useReveal } from '../hooks/useReveal.js';
+import resumePdf from '../assets/resume/Resume-8-3-2026.pdf';
 import TextMe from './TextMe.jsx';
 import './Contact.css';
 
@@ -34,6 +35,9 @@ export default function Contact() {
           rel="noopener noreferrer"
         >
           GitHub
+        </a>
+        <a href={resumePdf} target="_blank" rel="noopener noreferrer">
+          Resume
         </a>
         <a
           href="https://linkedin.com/in/ronielle-maranan"
