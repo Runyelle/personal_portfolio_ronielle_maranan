@@ -21,6 +21,13 @@
   --radius-lg: 28px;
   --radius-md: 18px;
   --radius-full: 999px;
+  /* single warm accent — used sparingly (hover, focus, active marks).
+     --gold is the only one allowed as text colour (>= 6:1 on every surface);
+     --gold-muted is for borders/lines only (>= 4.4:1 on the brightest glass);
+     never put white text on gold — use near-black */
+  --gold: #f5b12e;
+  --gold-muted: #c99a3a;
+  --gold-glow: rgba(245, 177, 46, 0.18);
 }
 
 * {
@@ -50,8 +57,14 @@ body {
 }
 
 ::selection {
-  background: var(--silver);
+  background: var(--gold);
   color: #0a0a0f;
+}
+
+/* keyboard focus only — mouse clicks don't draw a ring */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
 }
 
 a {

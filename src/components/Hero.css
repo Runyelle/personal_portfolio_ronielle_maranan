@@ -140,7 +140,8 @@
   cursor: pointer;
   user-select: none;
   white-space: nowrap;
-  transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
+  transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease,
+    filter 0.3s ease;
   width: fit-content;
 }
 
@@ -158,14 +159,16 @@
 }
 
 /* hover: fine vertical striping in silver/graphite, clipped to the glyphs,
-   with a soft bloom riding over it — the stripes drift slowly sideways */
+   with a soft bloom riding over it — the stripes drift slowly sideways.
+   The stripes stay silver; only the bloom's core and the outer glow pick
+   up a hint of gold, like light catching the chrome */
 .hero-word:hover {
   color: transparent;
   transform: scale(1.02);
   background-image: radial-gradient(
       58% 130% at 32% 50%,
-      rgba(255, 255, 255, 0.92),
-      rgba(255, 255, 255, 0.18) 42%,
+      rgba(255, 236, 196, 0.92),
+      rgba(245, 177, 46, 0.16) 42%,
       rgba(255, 255, 255, 0) 68%
     ),
     linear-gradient(
@@ -182,8 +185,13 @@
   background-position: 0 0, 0 0;
   -webkit-background-clip: text;
   background-clip: text;
-  filter: drop-shadow(0 0 22px rgba(196, 201, 212, 0.22));
+  filter: drop-shadow(0 0 22px var(--gold-glow));
   animation: striate 3.4s linear infinite;
+}
+
+/* touch: the tapped word gets the same warm glow (no striping) */
+.hero-word.tapped {
+  filter: drop-shadow(0 0 22px var(--gold-glow));
 }
 
 /* one full tile per cycle, so the drift loops seamlessly */

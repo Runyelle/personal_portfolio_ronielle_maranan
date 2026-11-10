@@ -268,3 +268,8 @@
     animation: none;
   }
 }
+
+/* .ow-name clips overflow for its ellipsis — keep the focus ring inside it */
+.ow-name a:focus-visible {
+  outline-offset: -2px;
+}

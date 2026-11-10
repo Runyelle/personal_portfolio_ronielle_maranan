@@ -1,6 +1,9 @@
 import { navLinks } from '../data/content.js';
 import { useMediaQuery } from '../hooks/useMediaQuery.js';
+import { useActiveSection } from '../hooks/useActiveSection.js';
 import './NavLinks.css';
+
+const sectionIds = navLinks.map((link) => link.href.slice(1));
 
 /** Document-relative top, walked via offsetTop so the `.reveal` transform
  *  on a not-yet-revealed section doesn't skew the measurement. */
@@ -12,6 +15,7 @@ function documentTop(el) {
 
 export default function NavLinks() {
   const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const active = useActiveSection(sectionIds);
 
   const handleClick = (e, href) => {
     // let the browser handle new-tab / modified clicks normally
@@ -49,6 +53,8 @@ export default function NavLinks() {
         <a
           key={link.href}
           href={link.href}
+          className={active === link.href.slice(1) ? 'is-active' : undefined}
+          aria-current={active === link.href.slice(1) ? 'location' : undefined}
           onClick={(e) => handleClick(e, link.href)}
         >
           {link.label}
