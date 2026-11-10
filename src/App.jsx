@@ -1,4 +1,4 @@
-import FlashBackground from './components/FlashBackground.jsx';
+import LightBeam from './components/LightBeam.jsx';
 import Ambient from './components/Ambient.jsx';
 import Brand from './components/Brand.jsx';
 import NavLinks from './components/NavLinks.jsx';
@@ -12,7 +12,7 @@ import Footer from './components/Footer.jsx';
 export default function App() {
   return (
     <>
-      <FlashBackground />
+      <LightBeam />
       <Ambient />
       <div className="grain" />
       <Brand />
