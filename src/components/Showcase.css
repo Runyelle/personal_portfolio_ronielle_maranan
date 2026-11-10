@@ -35,7 +35,8 @@
   flex: 0 0 100vw;
   height: 100vh;
   /* JS sets opacity + scale per panel as it passes through the viewport centre */
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  /* short ease: follows scroll closely while smoothing wheel steps (was 0.35s) */
+  transition: opacity 0.12s linear, transform 0.12s linear;
   will-change: opacity, transform;
 }
 
@@ -117,9 +118,9 @@
   gap: 16px;
 }
 
-/* the chat card only joins this slide when the 2×2 grid below kicks in —
+/* the chat window only joins this slide when the 2×2 grid below kicks in —
    on smaller screens there's no room for it and it lives in Contact only */
-.outside-cards .tm {
+.outside-cards .mw--messages {
   display: none;
 }
 
@@ -129,7 +130,8 @@
     gap: clamp(16px, 1.6vw, 22px);
   }
 
-  /* the Rein card soaks up whatever height the bio column leaves */
+  /* the Rein window soaks up whatever height the bio column leaves */
+  .outside-cards .mw--rein,
   .outside-cards .rein {
     flex: 1;
   }
@@ -146,7 +148,12 @@
     display: flex;
   }
 
+  .outside-cards .mw--messages {
+    display: flex;
+  }
+
   /* the Rein card gives its slack to the chat card */
+  .outside-cards .mw--rein,
   .outside-cards .rein {
     min-height: 0;
   }
@@ -154,6 +161,46 @@
   .outside-cards .rein-frame {
     min-height: 40px;
   }
+}
+
+/* ---------- Outside Work as a desk of overlapping Mac windows ----------
+   Desk mode (wide screen + fine pointer, see Showcase.jsx): the windows keep
+   their natural sizes from the grid, then pull into each other so edges and
+   title bars overlap like a cascade. Overlaps only take padding/margins, so
+   no card's main content starts covered. Drag offsets come on top (--wx/--wy). */
+.outside-layout.is-desk {
+  gap: 0;
+}
+
+.outside-layout.is-desk .mw--bout {
+  margin: clamp(10px, 2vh, 22px) 0 clamp(18px, 3.5vh, 40px);
+}
+
+.outside-layout.is-desk .outside-cards {
+  gap: 0;
+}
+
+/* each window tucks its title bar over the bottom edge of the one above */
+.outside-layout.is-desk .outside-cards > .mw + .mw {
+  margin-top: -14px;
+}
+
+/* staggered left/right offsets — the first leans over the notes window */
+.outside-layout.is-desk .outside-cards > .mw:nth-child(1) {
+  margin-left: -34px;
+  margin-right: 34px;
+}
+.outside-layout.is-desk .outside-cards > .mw:nth-child(2) {
+  margin-left: 6px;
+  margin-right: -6px;
+}
+.outside-layout.is-desk .outside-cards > .mw:nth-child(3) {
+  margin-left: -20px;
+  margin-right: 20px;
+}
+.outside-layout.is-desk .outside-cards > .mw:nth-child(4) {
+  margin-left: 14px;
+  margin-right: -14px;
 }
 
 /* Projects panel: heading sits as a vertically-centered left column,
@@ -393,7 +440,13 @@
   border: 1px solid var(--glass-border);
   border-radius: 10px;
   color: var(--text-dim);
-  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease,
+    transform 0.1s ease-out;
+}
+
+/* press feedback on pointer-down */
+.project-icon:active {
+  transform: scale(0.97);
 }
 
 .project-card.is-active {

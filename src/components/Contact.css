@@ -40,13 +40,37 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   line-height: 1.35;
-  transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+  /* lean (useMagnet), grow and press each own a separate property, so none
+     overrides another; the text cube rotates its own inner element */
+  translate: var(--mx, 0px) var(--my, 0px);
+  transition: scale 0.3s ease, translate 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .contact-circle:hover {
-  transform: scale(1.06);
+  scale: 1.06;
   background: #ffc14d;
   box-shadow: 0 0 48px 6px var(--gold-glow);
+}
+
+/* press feedback on pointer-down — relative to the hovered 1.06 */
+.contact-circle:active {
+  scale: 1.03;
+  transition: scale 0.1s ease-out, translate 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* touch has no hover growth to press against — press shrinks from 1 */
+@media (hover: none) {
+  .contact-circle:active {
+    scale: 0.97;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-circle {
+    translate: none;
+  }
 }
 
 /* the chat card, just below the "Get in touch" circle */
@@ -67,14 +91,19 @@
 .social-row a {
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
-  color: var(--text-faint);
+  color: var(--text-dim);
   border-bottom: 1px solid transparent;
-  transition: color 0.2s ease, border-color 0.2s ease;
+  transition: color 0.2s ease, border-color 0.2s ease, opacity 0.1s ease-out;
 }
 
 .social-row a:hover {
   color: var(--text);
   border-color: var(--gold);
+}
+
+/* press feedback on pointer-down: text dims rather than scales (no jitter) */
+.social-row a:active {
+  opacity: 0.7;
 }
 
 @media (max-width: 640px) {

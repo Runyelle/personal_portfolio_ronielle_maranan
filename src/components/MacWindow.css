@@ -1,0 +1,94 @@
+/* macOS-style window frame for the Showcase's "Outside Work" cards.
+   The card inside keeps its own content and glass fill; the frame supplies
+   the title bar, corners, border and depth. */
+.mw {
+  --mw-bar-h: 26px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* windows behind the front one: lighter shadow */
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.42);
+  /* drag offset, written by useDraggableWindow */
+  translate: var(--wx, 0px) var(--wy, 0px);
+  transition: box-shadow 0.2s ease;
+}
+
+/* the front window reads as nearer: deeper, larger shadow */
+.mw.is-front {
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.62), 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.mw-bar {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  height: var(--mw-bar-h);
+  padding: 0 12px;
+  /* dark-mode title bar, with a bright top edge catching the light */
+  background: linear-gradient(180deg, #2a2a2f, #202024);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.55);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  user-select: none;
+}
+
+.mw.is-draggable .mw-bar {
+  cursor: grab;
+  touch-action: none;
+}
+
+.mw.is-draggable .mw-bar:active {
+  cursor: grabbing;
+}
+
+.mw-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: calc(100% - 140px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  /* back windows: dimmed but still >= 4.5:1 on the bar (--text-dim ~5.2:1) */
+  color: var(--text-dim);
+  pointer-events: none;
+}
+
+.mw.is-front .mw-title {
+  color: var(--text);
+}
+
+/* back windows: grey traffic lights, like macOS inactive windows */
+.mw:not(.is-front) .hw-light {
+  background: #4a4a50;
+}
+
+/* the card becomes the window body: square corners, no own border/shadow.
+   Some cards sit inside a wrapper (Spotify's .np), so match at any depth. */
+.mw > :not(.mw-bar) {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.mw .glass {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.mw > .np > .np-card {
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mw {
+    transition: none;
+  }
+}

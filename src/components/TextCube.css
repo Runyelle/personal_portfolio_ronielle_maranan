@@ -1,0 +1,44 @@
+/* 3D text cube (see useTextCube). Each face is one side of a 4-sided prism
+   rotating on the X axis; --angle steps by -90deg per flip. */
+.text-cube {
+  --cube-h: 2.8em; /* two lines at the circle's 1.35 line-height */
+  display: block;
+  width: 100%;
+  height: var(--cube-h);
+  perspective: 420px;
+}
+
+.text-cube-inner {
+  position: relative;
+  display: block;
+  height: 100%;
+  transform-style: preserve-3d;
+  /* rotate about the prism's centre, not its front face */
+  transform: translateZ(calc(var(--cube-h) / -2)) rotateX(var(--angle, 0deg));
+  /* settles with no overshoot; CSS retargets from the live angle if a hover
+     flips it again mid-turn */
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.text-cube-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: rotateX(calc(var(--i) * 90deg)) translateZ(calc(var(--cube-h) / 2));
+}
+
+.text-cube-line {
+  display: block;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-cube-inner {
+    transition: none;
+  }
+}

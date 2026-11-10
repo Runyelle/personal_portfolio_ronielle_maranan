@@ -1,7 +1,8 @@
 footer {
   text-align: center;
-  padding: 40px 20px 60px;
+  /* bottom room so the footer dock (see LaunchDock) never covers the text */
+  padding: 40px 20px 128px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  color: var(--text-faint);
+  color: var(--text-dim);
 }

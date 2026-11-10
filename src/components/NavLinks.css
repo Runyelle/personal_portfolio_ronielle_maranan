@@ -13,7 +13,7 @@
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--text-faint);
+  color: var(--text-dim);
   position: relative;
   transition: color 0.2s ease;
 }
@@ -26,22 +26,29 @@
   color: var(--gold);
 }
 
-/* active section: a 1px gold hairline centred under the label */
-.nav-links a::after {
-  content: '';
+/* active section: one 1px gold hairline that slides between labels.
+   --x is set by useNavIndicator; it appears in place when first shown. */
+.nav-indicator {
   position: absolute;
-  left: 50%;
+  left: 0;
   bottom: -7px;
   width: 14px;
   height: 1px;
-  margin-left: -7px;
   background: var(--gold);
+  pointer-events: none;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transform: translateX(var(--x, 0));
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
 }
 
-.nav-links a.is-active::after {
+.nav-indicator.is-on {
   opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-indicator {
+    transition: opacity 0.2s ease;
+  }
 }
 
 @media (max-width: 640px) {
