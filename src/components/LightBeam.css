@@ -1,0 +1,181 @@
+/* ============ light beam backdrop ============
+   A half-ellipse of vertical light streaks anchored to the bottom centre of
+   the viewport. --beam-s (set by useScrollTint) runs 0.3 → 0.7 → 0.3 down
+   the page: a low glow at the top, the longest streaks (~88svh) at
+   mid-page, back to the low glow at the bottom. Scaling is a transform, so
+   scrolling only recomposites — no repaint.
+
+   Brightness cap: at the single brightest pixel (every layer peaking at
+   the source) gold text must keep >= 4.5:1 and --text >= 7:1. With the
+   alphas below that pixel composites to ~#5c4e37 over --bg at mid-page,
+   when --beam-o is 1 (gold 4.31:1, text 6.72:1 — gold dips just under AA
+   at that one hot spot, an accepted trade-off for bolder gold; glass cards
+   cover the beam with --glass-base so text inside them is unaffected).
+   Re-run the check if any alpha below changes. */
+
+.light-beam {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.lb-fan {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  /* wide enough that, at full scale, the fan's soft edge sits off-screen
+     on both portrait and landscape viewports; svh so mobile toolbars
+     showing/hiding don't make it jump */
+  width: max(180vw, 150svh);
+  height: 125svh;
+  transform: translateX(-50%) scale(var(--beam-s, 0.3));
+  transform-origin: 50% 100%;
+  will-change: transform;
+  /* the radial falloff the streaks are cut into */
+  -webkit-mask-image: radial-gradient(
+    ellipse 50% 100% at 50% 100%,
+    #000 0%,
+    rgba(0, 0, 0, 0.6) 32%,
+    rgba(0, 0, 0, 0.18) 58%,
+    transparent 78%
+  );
+  mask-image: radial-gradient(
+    ellipse 50% 100% at 50% 100%,
+    #000 0%,
+    rgba(0, 0, 0, 0.6) 32%,
+    rgba(0, 0, 0, 0.18) 58%,
+    transparent 78%
+  );
+}
+
+/* the source: a warm-gold core. No white bloom — it lifted the gaps between
+   streaks and washed them out */
+.lb-core {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 24% 34% at 50% 100%,
+    rgba(245, 177, 46, 0.15),
+    transparent 70%
+  );
+}
+
+/* the gold layers strengthen with the beam's size — --beam-o rides the same
+   hump as --beam-s (0.35 → 1 → 0.35); the silver streaks stay constant */
+.lb-core,
+.lb-streaks--wide {
+  opacity: var(--beam-o, 0.35);
+}
+
+/* three streak layers with coprime periods (67 / 29 / 11px), so their
+   overlap never settles into a visible repeat. Each is 140px wider than the
+   fan and drifts by a whole number of its own periods, so the loop is
+   seamless */
+.lb-streaks {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: -140px;
+  will-change: transform;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+/* the wide, soft bands are gold — the warmth that runs through the silver */
+.lb-streaks--wide {
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 30px,
+    rgba(245, 177, 46, 0.1) 40px,
+    transparent 54px 67px
+  );
+  animation-name: lb-drift-wide;
+  animation-duration: 60s;
+}
+
+.lb-streaks--mid {
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 20px,
+    rgba(233, 234, 238, 0.13) 22px 23px,
+    transparent 26px 29px
+  );
+  animation-name: lb-drift-mid;
+  animation-duration: 42s;
+}
+
+.lb-streaks--fine {
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 7px,
+    rgba(233, 234, 238, 0.04) 8px,
+    transparent 11px
+  );
+  animation-name: lb-drift-fine;
+  animation-duration: 30s;
+}
+
+/* 2 × 67px, leftward */
+@keyframes lb-drift-wide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-134px);
+  }
+}
+
+/* 4 × 29px, rightward — counter-drift gives the shimmer some depth */
+@keyframes lb-drift-mid {
+  from {
+    transform: translateX(-116px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* 12 × 11px, leftward */
+@keyframes lb-drift-fine {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-132px);
+  }
+}
+
+/* shimmer is autonomous motion — drop it; scroll growth is user-driven, so
+   it stays */
+@media (prefers-reduced-motion: reduce) {
+  .lb-streaks {
+    animation: none;
+  }
+}
+
+/* ---------- scroll-linked gray floor ----------
+   Moved here from FlashBackground.css (now unused) unchanged.
+   --gray-t runs 0 -> 1 -> 0 down the page (see useScrollTint). `lighten`
+   raises the dark parts of the backdrop to --gray and leaves anything already
+   brighter untouched, so it can only ever lift blacks toward --gray — the
+   brightest pixel behind any copy stays what the beam made it. */
+.scroll-tint {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: var(--gray);
+  mix-blend-mode: lighten;
+  opacity: var(--gray-t, 0);
+}
+
+/* no blend support — fall back to a wash faint enough to stay legible */
+@supports not (mix-blend-mode: lighten) {
+  .scroll-tint {
+    mix-blend-mode: normal;
+    opacity: calc(0.55 * var(--gray-t, 0));
+  }
+}

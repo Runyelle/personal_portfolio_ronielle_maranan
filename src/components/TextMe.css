@@ -144,7 +144,7 @@
 }
 
 .tm-field:focus-within {
-  border-color: var(--text-faint);
+  border-color: var(--gold-muted);
 }
 
 .tm-field input {
@@ -208,6 +208,7 @@
 .tm-note a {
   color: var(--silver);
   text-decoration: underline;
+  text-decoration-color: var(--gold-muted);
 }
 
 @media (prefers-reduced-motion: reduce) {

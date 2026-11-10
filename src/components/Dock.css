@@ -1,0 +1,148 @@
+/* decorative dock for the hero launch intro (see useLaunchIntro) */
+.dock {
+  --dock-icon: 52px;
+  position: fixed;
+  left: 50%;
+  bottom: 10px;
+  /* centred with `translate` so the intro can animate `transform` freely */
+  translate: -50% 0;
+  z-index: 90;
+  pointer-events: none;
+  visibility: hidden;
+  /* at rest the dock sits below the screen edge; the footer reprise slides
+     it up and back with these transitions (the intro animates it in JS) */
+  transform: translateY(calc(100% + 24px));
+  transition: transform 0.38s cubic-bezier(0.4, 0, 1, 1), visibility 0s linear 0.38s;
+}
+
+/* launch intro: shown at rest; useLaunchIntro drives the motion */
+.dock.is-active {
+  visibility: visible;
+  transform: none;
+  transition: none;
+}
+
+/* footer reprise: rises while the footer is in view */
+.dock.is-docked {
+  visibility: visible;
+  transform: none;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
+}
+
+/* the app icon is a "Back to top" button only while docked */
+.dock.is-docked .dock-app {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* the window is open, so the app shows its running dot */
+.dock.is-docked .dock-dot--app {
+  opacity: 1;
+}
+
+/* translucent glass shelf; bright top edge = light catching the material */
+.dock-shelf {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 7px 8px 9px;
+  border-radius: 22px;
+  background: rgba(38, 38, 44, 0.42);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset,
+    0 18px 40px rgba(0, 0, 0, 0.45);
+}
+
+.dock-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dock-icon {
+  width: var(--dock-icon);
+  height: var(--dock-icon);
+  border-radius: 23%;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.18) inset,
+    0 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+/* the portfolio "app": the brand mark on a dark tile (a <button>) */
+.dock-app {
+  appearance: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  transition: scale 0.1s ease-out;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(120% 100% at 50% 0%, #2c2c33, #0d0d10 70%);
+  border: 1px solid rgba(245, 177, 46, 0.35);
+}
+
+.dock-app img {
+  width: 68%;
+  height: 68%;
+  object-fit: contain;
+}
+
+/* press feedback on pointer-down */
+.dock.is-docked .dock-app:active {
+  scale: 0.97;
+}
+
+/* app tiles — supplied icon images, clipped to the dock's squircle */
+.dock-tile {
+  overflow: hidden;
+}
+.dock-tile img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* running-app indicator — hidden until the app "opens" */
+.dock-dot {
+  width: 4px;
+  height: 4px;
+  margin-top: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  opacity: 0;
+}
+
+.dock-sep {
+  align-self: stretch;
+  width: 1px;
+  margin: 4px 2px 8px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+@media (max-width: 640px) {
+  .dock {
+    --dock-icon: 38px;
+  }
+  .dock-shelf {
+    gap: 6px;
+    border-radius: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dock,
+  .dock.is-docked {
+    transition: visibility 0s;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .dock-shelf {
+    background: rgb(30, 30, 34);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}

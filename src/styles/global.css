@@ -1,7 +1,7 @@
 :root {
   --bg: #08080a;
-  /* how gray the page gets at mid-scroll */
-  --gray: #212121;
+  /* how gray the page gets at mid-scroll — kept close to --bg */
+  --gray: rgb(17.6 17.6 19.6);
   /* 0 -> 1 -> 0 as the page scrolls; set by useScrollTint */
   --gray-t: 0;
   --bg-2: #0e0e11;
@@ -18,9 +18,20 @@
   --glass-fill: rgba(255, 255, 255, 0.04);
   --glass-fill-strong: rgba(255, 255, 255, 0.07);
   --glass-border: rgba(255, 255, 255, 0.12);
+  /* dark base painted under the glass tint so the light-beam streaks don't
+     show through cards — backdrop blur can't be relied on to hide them
+     (Showcase panels are backdrop roots: will-change/opacity) */
+  --glass-base: rgba(11, 11, 14, 0.85);
   --radius-lg: 28px;
   --radius-md: 18px;
   --radius-full: 999px;
+  /* single warm accent — used sparingly (hover, focus, active marks).
+     --gold is the only one allowed as text colour (>= 6:1 on every surface);
+     --gold-muted is for borders/lines only (>= 4.4:1 on the brightest glass);
+     never put white text on gold — use near-black */
+  --gold: #f5b12e;
+  --gold-muted: #c99a3a;
+  --gold-glow: rgba(245, 177, 46, 0.18);
 }
 
 * {
@@ -35,11 +46,11 @@ body {
   margin: 0;
   background: var(--bg);
   /* rides the same curve as the backdrop so overscroll matches the page;
-     lands on --gray (#212121) at the peak */
+     lands on --gray (~#121214) at the peak */
   background: rgb(
-    calc(8 + 25 * var(--gray-t))
-    calc(8 + 25 * var(--gray-t))
-    calc(10 + 23 * var(--gray-t))
+    calc(8 + 9.6 * var(--gray-t))
+    calc(8 + 9.6 * var(--gray-t))
+    calc(10 + 9.6 * var(--gray-t))
   );
   color: var(--text);
   font-family: 'Manrope', sans-serif;
@@ -50,8 +61,14 @@ body {
 }
 
 ::selection {
-  background: var(--silver);
+  background: var(--gold);
   color: #0a0a0f;
+}
+
+/* keyboard focus only — mouse clicks don't draw a ring */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
 }
 
 a {
@@ -87,7 +104,8 @@ nav {
 
 /* ---------- glass utility ---------- */
 .glass {
-  background: var(--glass-fill);
+  background: linear-gradient(var(--glass-fill), var(--glass-fill)),
+    var(--glass-base);
   border: 1px solid var(--glass-border);
   backdrop-filter: blur(22px) saturate(160%);
   -webkit-backdrop-filter: blur(22px) saturate(160%);
@@ -107,7 +125,7 @@ nav {
   font-size: 11.5px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--text-faint);
+  color: var(--gold);
   margin-bottom: 16px;
 }
 
@@ -121,4 +139,11 @@ nav {
 .reveal.in {
   opacity: 1;
   transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    transform: none;
+    transition: opacity 0.4s ease;
+  }
 }

@@ -7,13 +7,27 @@
   padding-top: 120px;
 }
 
+/* label materialises: blur, lift and opacity settle together */
 .about-label {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--text-faint);
+  color: var(--gold);
   margin-bottom: 28px;
+  opacity: 0;
+  filter: blur(8px);
+  transform: translateY(8px);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.about-label.in {
+  opacity: 1;
+  filter: blur(0);
+  transform: none;
 }
 
 .about-body p {
@@ -30,6 +44,29 @@
   margin-top: 1.1em;
 }
 
+/* scroll-lit words: --fill (0 → 1) is written by useScrollProgress.
+   Defaults to 1, so without JS or with reduced motion the text is fully lit. */
+.about-word {
+  --fill: 1;
+  opacity: calc(0.18 + 0.82 * var(--fill));
+}
+
+.about-accent {
+  color: var(--gold);
+}
+
+.about .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 @media (max-width: 640px) {
   .about {
     padding-top: 90px;
@@ -37,5 +74,13 @@
 
   .about-body p {
     font-size: clamp(22px, 6.4vw, 30px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-label {
+    filter: none;
+    transform: none;
+    transition: opacity 0.3s ease;
   }
 }

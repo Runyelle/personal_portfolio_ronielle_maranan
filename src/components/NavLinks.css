@@ -13,12 +13,42 @@
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--text-faint);
+  color: var(--text-dim);
+  position: relative;
   transition: color 0.2s ease;
 }
 
-.nav-links a:hover {
+.nav-links a.is-active {
   color: var(--text);
+}
+
+.nav-links a:hover {
+  color: var(--gold);
+}
+
+/* active section: one 1px gold hairline that slides between labels.
+   --x is set by useNavIndicator; it appears in place when first shown. */
+.nav-indicator {
+  position: absolute;
+  left: 0;
+  bottom: -7px;
+  width: 14px;
+  height: 1px;
+  background: var(--gold);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(var(--x, 0));
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+}
+
+.nav-indicator.is-on {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-indicator {
+    transition: opacity 0.2s ease;
+  }
 }
 
 @media (max-width: 640px) {

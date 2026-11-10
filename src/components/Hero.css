@@ -22,6 +22,61 @@
   background: #0d0d10;
   border: 1px solid rgba(255, 255, 255, 0.07);
   box-shadow: 0 40px 90px rgba(0, 0, 0, 0.6), 0 2px 0 rgba(255, 255, 255, 0.04) inset;
+  /* scroll recede: --recede (0 → 1) is written by useRecede. Uses the
+     individual `scale` property so the launch intro can own `transform`. */
+  scale: calc(1 - 0.08 * var(--recede, 0));
+  opacity: calc(1 - 0.65 * var(--recede, 0));
+}
+
+/* set by useLaunchIntro while the window is still opening, and by
+   useHeroWindow while it's closing */
+.hero-window.is-launching,
+.hero-window.is-closing {
+  pointer-events: none;
+}
+
+/* closed: keeps its space (no page jump) but is gone, incl. from assistive tech */
+.hero-window.is-closed {
+  visibility: hidden;
+  opacity: 0;
+}
+
+/* red traffic light = close button; shows its × on hover, like macOS */
+.hw-close {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+}
+
+/* 24px hit area around the 12px dot */
+.hw-close::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+}
+
+.hw-close svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: rgba(77, 0, 0, 0.78);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.hw-lights:hover .hw-close svg,
+.hw-close:focus-visible svg {
+  opacity: 1;
+}
+
+/* press: darkens on pointer-down, like the real control */
+.hw-close:active {
+  filter: brightness(0.82);
 }
 
 .hw-bar {
@@ -140,7 +195,8 @@
   cursor: pointer;
   user-select: none;
   white-space: nowrap;
-  transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
+  transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease,
+    filter 0.3s ease;
   width: fit-content;
 }
 
@@ -149,23 +205,26 @@
   margin-top: -0.14em;
 }
 
+/* the one gold word — carries most of the page's accent weight */
 .hero-word.accent {
-  background: linear-gradient(90deg, var(--silver), var(--silver-dim));
+  background: linear-gradient(90deg, var(--gold), var(--gold-muted));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  opacity: 0.62;
+  opacity: 0.9;
 }
 
 /* hover: fine vertical striping in silver/graphite, clipped to the glyphs,
-   with a soft bloom riding over it — the stripes drift slowly sideways */
+   with a soft bloom riding over it — the stripes drift slowly sideways.
+   The stripes stay silver; only the bloom's core and the outer glow pick
+   up a hint of gold, like light catching the chrome */
 .hero-word:hover {
   color: transparent;
   transform: scale(1.02);
   background-image: radial-gradient(
       58% 130% at 32% 50%,
-      rgba(255, 255, 255, 0.92),
-      rgba(255, 255, 255, 0.18) 42%,
+      rgba(255, 236, 196, 0.92),
+      rgba(245, 177, 46, 0.16) 42%,
       rgba(255, 255, 255, 0) 68%
     ),
     linear-gradient(
@@ -182,8 +241,13 @@
   background-position: 0 0, 0 0;
   -webkit-background-clip: text;
   background-clip: text;
-  filter: drop-shadow(0 0 22px rgba(196, 201, 212, 0.22));
+  filter: drop-shadow(0 0 22px var(--gold-glow));
   animation: striate 3.4s linear infinite;
+}
+
+/* touch: the tapped word gets the same warm glow (no striping) */
+.hero-word.tapped {
+  filter: drop-shadow(0 0 22px var(--gold-glow));
 }
 
 /* one full tile per cycle, so the drift loops seamlessly */
@@ -193,8 +257,24 @@
   }
 }
 
+/* same striping as the silver words, struck in gold */
 .hero-word.accent:hover {
   opacity: 1;
+  background-image: radial-gradient(
+      58% 130% at 32% 50%,
+      rgba(255, 241, 207, 0.92),
+      rgba(245, 177, 46, 0.18) 42%,
+      rgba(245, 177, 46, 0) 68%
+    ),
+    linear-gradient(
+      90deg,
+      #fff1cf 0%,
+      #f5b12e 22%,
+      #b8862b 46%,
+      #6b4c14 62%,
+      #d9a23a 82%,
+      #fff1cf 100%
+    );
 }
 
 .hero-desc {

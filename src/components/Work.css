@@ -11,21 +11,69 @@
 }
 
 .work-row {
+  position: relative;
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 20px;
   padding: 24px 4px;
   border-bottom: 1px solid var(--glass-border);
-  transition: padding-left 0.25s ease;
 }
 
-.work-row:hover {
-  padding-left: 12px;
+/* hover: the text slides over (transform, not padding — no layout per frame) */
+.work-main {
+  transition: translate 0.25s ease;
+}
+
+.work-row:hover .work-main {
+  translate: 8px 0;
+}
+
+/* entrance: the label, then each row 40ms apart (--d, capped at 200ms) */
+.work-group .section-label,
+.work-row {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0ms),
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0ms);
+}
+
+.work-group.in .section-label,
+.work-group.in .work-row {
+  opacity: 1;
+  transform: none;
+}
+
+/* 1px gold hairline that fades in as the row slides over */
+.work-row::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 24px;
+  bottom: 24px;
+  width: 1px;
+  background: var(--gold);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.work-row:hover::before {
+  opacity: 1;
 }
 
 .work-main {
   min-width: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-group .section-label,
+  .work-row {
+    transform: none;
+    transition: opacity 0.4s ease;
+  }
+  .work-row:hover .work-main {
+    translate: none;
+  }
 }
 
 .work-role {
@@ -39,7 +87,7 @@
 
 .work-org {
   font-size: 13px;
-  color: var(--text-faint);
+  color: var(--text-dim);
 }
 
 .work-period {
@@ -53,7 +101,7 @@
 }
 
 .work-period.current {
-  color: #9fbfb1;
+  color: var(--gold);
 }
 
 @media (max-width: 640px) {

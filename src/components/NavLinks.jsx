@@ -1,6 +1,11 @@
+import { useRef } from 'react';
 import { navLinks } from '../data/content.js';
 import { useMediaQuery } from '../hooks/useMediaQuery.js';
+import { useActiveSection } from '../hooks/useActiveSection.js';
+import { useNavIndicator } from '../hooks/useNavIndicator.js';
 import './NavLinks.css';
+
+const sectionIds = navLinks.map((link) => link.href.slice(1));
 
 /** Document-relative top, walked via offsetTop so the `.reveal` transform
  *  on a not-yet-revealed section doesn't skew the measurement. */
@@ -12,6 +17,10 @@ function documentTop(el) {
 
 export default function NavLinks() {
   const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const active = useActiveSection(sectionIds);
+  const navRef = useRef(null);
+  const indicatorRef = useRef(null);
+  useNavIndicator(navRef, indicatorRef, active);
 
   const handleClick = (e, href) => {
     // let the browser handle new-tab / modified clicks normally
@@ -44,11 +53,14 @@ export default function NavLinks() {
   };
 
   return (
-    <nav className="nav-links">
+    <nav className="nav-links" ref={navRef}>
       {navLinks.map((link) => (
         <a
           key={link.href}
           href={link.href}
+          data-key={link.href.slice(1)}
+          className={active === link.href.slice(1) ? 'is-active' : undefined}
+          aria-current={active === link.href.slice(1) ? 'location' : undefined}
           onClick={(e) => handleClick(e, link.href)}
         >
           {link.label}
@@ -57,6 +69,8 @@ export default function NavLinks() {
       <a href="/api/resume" target="_blank" rel="noopener noreferrer">
         Resume
       </a>
+      {/* one shared hairline that slides to the active link */}
+      <span className="nav-indicator" ref={indicatorRef} aria-hidden="true" />
     </nav>
   );
 }

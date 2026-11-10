@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { projects } from '../data/content.js';
 import { useMediaQuery } from '../hooks/useMediaQuery.js';
+import { shouldCycleShots } from '../hooks/showcaseShots.js';
 import Bout from './Bout.jsx';
 import FoodAlbum from './FoodAlbum.jsx';
 import NowPlaying from './NowPlaying.jsx';
@@ -8,6 +9,13 @@ import OverwatchStats from './OverwatchStats.jsx';
 import ProjectPhone from './ProjectPhone.jsx';
 import ReinClips from './ReinClips.jsx';
 import TextMe from './TextMe.jsx';
+import MacWindow from './MacWindow.jsx';
+import {
+  HOME_RATIO,
+  shouldGlideHome,
+  shouldResetStack,
+  useWindowStack,
+} from '../hooks/useWindowStack.js';
 import './Showcase.css';
 
 // map every project screenshot by its file name (no extension)
@@ -55,9 +63,52 @@ export default function Showcase() {
   const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const canHover = useMediaQuery('(hover: hover)');
   const scrollDriven = wideEnough && !reduceMotion;
+  // Outside Work panel as overlapping Mac windows: overlap + drag only with a
+  // fine pointer on a wide screen; the chat window only fits on tall screens
+  const deskMode = useMediaQuery('(min-width: 1024px) and (hover: hover) and (pointer: fine)');
+  const chatFits = useMediaQuery('(min-width: 1180px) and (min-height: 820px)');
+  const outsideRef = useRef(null);
+  const windows = useWindowStack(
+    chatFits ? ['bout', 'spotify', 'overwatch', 'rein', 'messages'] : ['bout', 'spotify', 'overwatch', 'rein']
+  );
+  // scrolling away from the desk sends the windows home: they glide back as
+  // the panel starts to leave (still mostly visible, so you see it), and the
+  // stacking order resets once it's fully off screen (an instant swap there
+  // is invisible; mid-glide it would pop windows over each other)
+  const [homeKey, setHomeKey] = useState(0);
+  const resetStack = windows.reset;
+  useEffect(() => {
+    const el = outsideRef.current;
+    if (!el || !deskMode || typeof IntersectionObserver === 'undefined') return undefined;
+    let wasRatio = 0;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const ratio = entry.isIntersecting ? entry.intersectionRatio : 0;
+        if (shouldGlideHome({ wasRatio, ratio })) setHomeKey((k) => k + 1);
+        if (shouldResetStack({ wasVisible: wasRatio > 0, isVisible: ratio > 0 })) resetStack();
+        wasRatio = ratio;
+      },
+      { threshold: [0, HOME_RATIO, 1] }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [deskMode, resetStack]);
+
+  const win = (id) => ({
+    id,
+    front: windows.front === id,
+    zIndex: windows.zIndex(id),
+    onRaise: () => windows.bringToFront(id),
+    deskRef: outsideRef,
+    draggable: deskMode,
+    reducedMotion: reduceMotion,
+    homeKey,
+  });
 
   // the project the phone is showing (null = nothing hovered yet)
   const [hovered, setHovered] = useState(null);
+  // is the pointer/focus on a card right now? (hovered keeps the last one)
+  const [pointerOver, setPointerOver] = useState(false);
   const [frame, setFrame] = useState(0);
 
   // reversible: fades the whole showcase as it scrolls in and back out
@@ -73,17 +124,21 @@ export default function Showcase() {
     if (!canHover) return;
     setFrame(0);
     setHovered(p);
+    setPointerOver(true);
   };
 
   // the phone falls back to the first project, so it's never an empty frame
   const shown = hovered || projectsWithShots[0];
 
-  // projects with several screenshots cycle through them while hovered
+  // projects with several screenshots cycle through them only while a card
+  // is hovered and the Showcase is on screen; otherwise the phone holds still
   useEffect(() => {
-    if (shown.shots.length < 2) return undefined;
+    if (!shouldCycleShots({ over: pointerOver, visible: sectionVisible, count: shown.shots.length })) {
+      return undefined;
+    }
     const id = setInterval(() => setFrame((f) => (f + 1) % shown.shots.length), FADE_INTERVAL);
     return () => clearInterval(id);
-  }, [shown]);
+  }, [shown, pointerOver, sectionVisible]);
 
   // fade the section in/out as it enters and leaves the viewport (reversible)
   useEffect(() => {
@@ -185,6 +240,8 @@ export default function Showcase() {
                   className={`project-card${shown.name === p.name && hovered ? ' is-active' : ''}`}
                   onMouseEnter={() => handleEnter(p)}
                   onFocus={() => handleEnter(p)}
+                  onMouseLeave={() => setPointerOver(false)}
+                  onBlur={() => setPointerOver(false)}
                 >
                   <div className="project-tags">
                     <span className="project-tag mono">{p.tag}</span>
@@ -239,14 +296,32 @@ export default function Showcase() {
           </div>
 
           {/* Panel 3 — Outside Work: bio on the left, Spotify / Overwatch / Rein cards stacked right */}
-          <div className="panel panel--outside" ref={setPanel(2)}>
-            <div className="outside-layout">
-              <Bout />
+          <div
+            className="panel panel--outside"
+            ref={(el) => {
+              setPanel(2)(el);
+              outsideRef.current = el;
+            }}
+          >
+            {/* each card is a Mac window; in desk mode they overlap and drag (by
+                the title bar) anywhere inside this panel */}
+            <div className={`outside-layout${deskMode ? ' is-desk' : ''}`}>
+              <MacWindow {...win('bout')} title="Notes — What I'm bout">
+                <Bout />
+              </MacWindow>
               <div className="outside-cards">
-                <NowPlaying />
-                <OverwatchStats />
-                <ReinClips />
-                <TextMe />
+                <MacWindow {...win('spotify')} title="Spotify">
+                  <NowPlaying />
+                </MacWindow>
+                <MacWindow {...win('overwatch')} title="Overwatch">
+                  <OverwatchStats />
+                </MacWindow>
+                <MacWindow {...win('rein')} title="Rein Clips">
+                  <ReinClips />
+                </MacWindow>
+                <MacWindow {...win('messages')} title="Messages">
+                  <TextMe />
+                </MacWindow>
               </div>
             </div>
           </div>

@@ -1,10 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { heroWords } from '../data/content.js';
 import { useMediaQuery } from '../hooks/useMediaQuery.js';
+import { useRecede } from '../hooks/useRecede.js';
 import './Hero.css';
 
-export default function Hero() {
+// windowRef comes from App, which shares it with the dock (see LaunchDock)
+export default function Hero({ windowRef: sharedWindowRef, closeBtnRef, onClose }) {
   const canHover = useMediaQuery('(hover: hover)');
+  const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  // window-frame motion: scroll recede here; the launch intro lives in LaunchDock
+  const ownWindowRef = useRef(null);
+  const windowRef = sharedWindowRef || ownWindowRef;
   // one entry per word that has been hovered: { x, y, z, show }
   const [popups, setPopups] = useState({});
   const [tapped, setTapped] = useState(null);
@@ -12,6 +18,8 @@ export default function Hero() {
   const dismissTimers = useRef({});
   // rising counter so the most recently opened window sits on top of the rest
   const topZ = useRef(70);
+
+  useRecede(heroRef, windowRef, !reduceMotion);
 
   const cancelDismiss = (i) => {
     if (dismissTimers.current[i]) {
@@ -61,12 +69,23 @@ export default function Hero() {
 
   return (
     <header className="hero" ref={heroRef}>
-      <div className="hero-window">
+      <div className="hero-window" ref={windowRef}>
         <div className="hw-bar">
-          <div className="hw-lights" aria-hidden="true">
-            <span className="hw-light red" />
-            <span className="hw-light yellow" />
-            <span className="hw-light green" />
+          <div className="hw-lights">
+            {/* red closes the window (see useHeroWindow); the dock rises to re-open it */}
+            <button
+              type="button"
+              className="hw-light red hw-close"
+              aria-label="Close window"
+              ref={closeBtnRef}
+              onClick={onClose}
+            >
+              <svg viewBox="0 0 12 12" aria-hidden="true">
+                <path d="M3.5 3.5 8.5 8.5 M8.5 3.5 3.5 8.5" />
+              </svg>
+            </button>
+            <span className="hw-light yellow" aria-hidden="true" />
+            <span className="hw-light green" aria-hidden="true" />
           </div>
           <div className="hw-title">Hello, I'm Ronielle.</div>
           <span className="hw-plus" aria-hidden="true">
