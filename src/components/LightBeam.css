@@ -1,9 +1,9 @@
 /* ============ light beam backdrop ============
    A half-ellipse of vertical light streaks anchored to the bottom centre of
-   the viewport. --beam-s (0.3 → 1, set by useScrollTint) scales it from a
-   low glow into a fan that fills the screen, so it grows outward and upward
-   as the page scrolls. Scaling is a transform, so scrolling only
-   recomposites — no repaint.
+   the viewport. --beam-s (set by useScrollTint) runs 0.3 → 0.7 → 0.3 down
+   the page: a low glow at the top, the longest streaks (~88svh) at
+   mid-page, back to the low glow at the bottom. Scaling is a transform, so
+   scrolling only recomposites — no repaint.
 
    Brightness cap: at the single brightest pixel (every layer peaking at
    the source) gold text must keep >= 4.5:1 and --text >= 7:1. With the
