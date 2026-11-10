@@ -11,6 +11,7 @@
 }
 
 .work-row {
+  position: relative;
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -22,6 +23,23 @@
 
 .work-row:hover {
   padding-left: 12px;
+}
+
+/* 1px gold hairline that fades in as the row slides over */
+.work-row::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 24px;
+  bottom: 24px;
+  width: 1px;
+  background: var(--gold);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.work-row:hover::before {
+  opacity: 1;
 }
 
 .work-main {
@@ -53,7 +71,7 @@
 }
 
 .work-period.current {
-  color: #9fbfb1;
+  color: var(--gold);
 }
 
 @media (max-width: 640px) {

@@ -29,8 +29,8 @@
   font-size: clamp(11px, 0.55vw, 13px);
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  /* --text-faint disappears at this size on glass */
-  color: var(--silver-dim);
+  /* --text-faint disappears at this size on glass; gold holds >= 6:1 */
+  color: var(--gold);
 }
 
 .bout-text {

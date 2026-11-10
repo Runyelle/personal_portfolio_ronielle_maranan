@@ -150,12 +150,13 @@
   margin-top: -0.14em;
 }
 
+/* the one gold word — carries most of the page's accent weight */
 .hero-word.accent {
-  background: linear-gradient(90deg, var(--silver), var(--silver-dim));
+  background: linear-gradient(90deg, var(--gold), var(--gold-muted));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  opacity: 0.62;
+  opacity: 0.9;
 }
 
 /* hover: fine vertical striping in silver/graphite, clipped to the glyphs,
@@ -201,8 +202,24 @@
   }
 }
 
+/* same striping as the silver words, struck in gold */
 .hero-word.accent:hover {
   opacity: 1;
+  background-image: radial-gradient(
+      58% 130% at 32% 50%,
+      rgba(255, 241, 207, 0.92),
+      rgba(245, 177, 46, 0.18) 42%,
+      rgba(245, 177, 46, 0) 68%
+    ),
+    linear-gradient(
+      90deg,
+      #fff1cf 0%,
+      #f5b12e 22%,
+      #b8862b 46%,
+      #6b4c14 62%,
+      #d9a23a 82%,
+      #fff1cf 100%
+    );
 }
 
 .hero-desc {

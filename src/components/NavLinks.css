@@ -18,9 +18,12 @@
   transition: color 0.2s ease;
 }
 
-.nav-links a:hover,
 .nav-links a.is-active {
   color: var(--text);
+}
+
+.nav-links a:hover {
+  color: var(--gold);
 }
 
 /* active section: a 1px gold hairline centred under the label */

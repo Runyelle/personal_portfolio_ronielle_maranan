@@ -8,7 +8,7 @@
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--text-faint);
+  color: var(--gold);
   margin-bottom: 24px;
 }
 
@@ -30,20 +30,23 @@
   width: 132px;
   height: 132px;
   border-radius: 50%;
-  background: var(--text);
+  /* gold fill — text stays near-black (10.5:1); never white on gold */
+  background: var(--gold);
   color: #0b0b0d;
+  box-shadow: 0 0 0 0 var(--gold-glow);
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   line-height: 1.35;
-  transition: transform 0.3s ease, background 0.3s ease;
+  transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .contact-circle:hover {
   transform: scale(1.06);
-  background: #ffffff;
+  background: #ffc14d;
+  box-shadow: 0 0 48px 6px var(--gold-glow);
 }
 
 /* the chat card, just below the "Get in touch" circle */

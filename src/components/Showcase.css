@@ -46,7 +46,7 @@
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--text-faint);
+  color: var(--gold);
   z-index: 3;
 }
 
@@ -342,7 +342,7 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #4ade80;
+  background: var(--gold);
 }
 
 .project-card h3 {
@@ -396,7 +396,7 @@
 }
 
 .project-card.is-active {
-  border-color: rgba(255, 255, 255, 0.28);
+  border-color: var(--gold-muted);
   background: var(--glass-fill-strong);
 }
 
