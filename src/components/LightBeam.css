@@ -5,11 +5,11 @@
    as the page scrolls. Scaling is a transform, so scrolling only
    recomposites — no repaint.
 
-   Brightness cap: with every layer peaking at the same pixel the fan
-   composites to #494238 at full opacity; .lb-fan's opacity: 0.6 brings that
-   to ~#2f2a24, leaving headroom under the #3a3a3e worst case all text/gold
-   contrast figures were checked against (the ambient blobs add on top).
-   Re-run the check if any alpha below changes. */
+   Brightness cap: at the single brightest pixel (every layer peaking at
+   the source) gold text must keep >= 4.5:1 and --text >= 7:1. With the
+   alphas below that pixel composites to ~#4f4635 over --bg (gold 4.96:1,
+   text 7.73:1); a single streak is ~1.43x its gap. Re-run the check if any
+   alpha below changes. */
 
 .light-beam {
   position: fixed;
@@ -30,7 +30,6 @@
   height: 125svh;
   transform: translateX(-50%) scale(var(--beam-s, 0.3));
   transform-origin: 50% 100%;
-  opacity: 0.6;
   will-change: transform;
   /* the radial falloff the streaks are cut into */
   -webkit-mask-image: radial-gradient(
@@ -49,20 +48,16 @@
   );
 }
 
-/* the source: a faint warm-gold core under a soft silver bloom */
+/* the source: a warm-gold core. No white bloom — it lifted the gaps between
+   streaks and washed them out */
 .lb-core {
   position: absolute;
   inset: 0;
   background: radial-gradient(
-      ellipse 20% 28% at 50% 100%,
-      rgba(245, 177, 46, 0.12),
-      transparent 70%
-    ),
-    radial-gradient(
-      ellipse 45% 70% at 50% 100%,
-      rgba(233, 234, 238, 0.04),
-      transparent 70%
-    );
+    ellipse 24% 34% at 50% 100%,
+    rgba(245, 177, 46, 0.11),
+    transparent 70%
+  );
 }
 
 /* three streak layers with coprime periods (67 / 29 / 11px), so their
@@ -80,11 +75,12 @@
   animation-iteration-count: infinite;
 }
 
+/* the wide, soft bands are gold — the warmth that runs through the silver */
 .lb-streaks--wide {
   background: repeating-linear-gradient(
     90deg,
     transparent 0 30px,
-    rgba(233, 234, 238, 0.04) 40px,
+    rgba(245, 177, 46, 0.07) 40px,
     transparent 54px 67px
   );
   animation-name: lb-drift-wide;
@@ -95,7 +91,7 @@
   background: repeating-linear-gradient(
     90deg,
     transparent 0 20px,
-    rgba(233, 234, 238, 0.07) 22px 23px,
+    rgba(233, 234, 238, 0.13) 22px 23px,
     transparent 26px 29px
   );
   animation-name: lb-drift-mid;
@@ -106,7 +102,7 @@
   background: repeating-linear-gradient(
     90deg,
     transparent 0 7px,
-    rgba(233, 234, 238, 0.05) 8px,
+    rgba(233, 234, 238, 0.04) 8px,
     transparent 11px
   );
   animation-name: lb-drift-fine;
@@ -155,7 +151,7 @@
    Moved here from FlashBackground.css (now unused) unchanged.
    --gray-t runs 0 -> 1 -> 0 down the page (see useScrollTint). `lighten`
    raises the dark parts of the backdrop to --gray and leaves anything already
-   brighter untouched, so it can only ever lift blacks toward #212121 — the
+   brighter untouched, so it can only ever lift blacks toward --gray — the
    brightest pixel behind any copy stays what the beam made it. */
 .scroll-tint {
   position: fixed;
