@@ -18,6 +18,10 @@
   --glass-fill: rgba(255, 255, 255, 0.04);
   --glass-fill-strong: rgba(255, 255, 255, 0.07);
   --glass-border: rgba(255, 255, 255, 0.12);
+  /* dark base painted under the glass tint so the light-beam streaks don't
+     show through cards — backdrop blur can't be relied on to hide them
+     (Showcase panels are backdrop roots: will-change/opacity) */
+  --glass-base: rgba(11, 11, 14, 0.85);
   --radius-lg: 28px;
   --radius-md: 18px;
   --radius-full: 999px;
@@ -100,7 +104,8 @@ nav {
 
 /* ---------- glass utility ---------- */
 .glass {
-  background: var(--glass-fill);
+  background: linear-gradient(var(--glass-fill), var(--glass-fill)),
+    var(--glass-base);
   border: 1px solid var(--glass-border);
   backdrop-filter: blur(22px) saturate(160%);
   -webkit-backdrop-filter: blur(22px) saturate(160%);

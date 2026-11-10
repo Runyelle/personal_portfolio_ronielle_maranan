@@ -1,5 +1,45 @@
 import { describe, expect, it } from 'vitest';
-import { BEAM_MAX, BEAM_MIN, beamScale } from './useScrollTint.js';
+import {
+  BEAM_MAX,
+  BEAM_MIN,
+  GOLD_MIN,
+  beamGold,
+  beamScale,
+} from './useScrollTint.js';
+
+describe('beamGold', () => {
+  it('is dim at the top and bottom of the page', () => {
+    expect(beamGold(0)).toBeCloseTo(GOLD_MIN);
+    expect(beamGold(1)).toBeCloseTo(GOLD_MIN);
+  });
+
+  it('is at full strength at the middle', () => {
+    expect(beamGold(0.5)).toBeCloseTo(1);
+  });
+
+  it('is symmetric and tracks beamScale (bolder as it grows)', () => {
+    for (let i = 1; i <= 100; i += 1) {
+      const p = i / 100;
+      const prev = (i - 1) / 100;
+      expect(beamGold(p)).toBeCloseTo(beamGold(1 - p));
+      // both rise together, then fall together
+      expect(Math.sign(beamGold(p) - beamGold(prev))).toBe(
+        Math.sign(beamScale(p) - beamScale(prev))
+      );
+    }
+  });
+
+  it('stays within [GOLD_MIN, 1] and clamps junk input', () => {
+    for (let i = 0; i <= 100; i += 1) {
+      const v = beamGold(i / 100);
+      expect(v).toBeGreaterThanOrEqual(GOLD_MIN - 1e-9);
+      expect(v).toBeLessThanOrEqual(1 + 1e-9);
+    }
+    expect(beamGold(-1)).toBeCloseTo(GOLD_MIN);
+    expect(beamGold(5)).toBeCloseTo(GOLD_MIN);
+    expect(beamGold(NaN)).toBeCloseTo(GOLD_MIN);
+  });
+});
 
 describe('beamScale', () => {
   it('starts at the small size at the top of the page', () => {

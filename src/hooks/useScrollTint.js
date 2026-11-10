@@ -21,6 +21,20 @@ export function beamScale(progress) {
   return BEAM_MIN + (BEAM_MAX - BEAM_MIN) * hump;
 }
 
+// strength of the beam's gold layers at the top & bottom of the page
+export const GOLD_MIN = 0.35;
+
+/**
+ * Pure: scroll progress → opacity of the beam's gold layers. Rides the same
+ * sin² hump as beamScale, so the gold gets bolder as the beam grows and
+ * fades back as it shrinks (GOLD_MIN → 1 → GOLD_MIN).
+ */
+export function beamGold(progress) {
+  const p = Math.min(1, Math.max(0, Number(progress) || 0));
+  const hump = Math.sin(Math.PI * p) ** 2;
+  return GOLD_MIN + (1 - GOLD_MIN) * hump;
+}
+
 /**
  * Publishes `--gray-t` on :root — a 0 → 1 → 0 curve tracking scroll position.
  * Black at the top, most gray at the middle of the page, black again at the
@@ -62,6 +76,7 @@ export function useScrollTint() {
       // progress, so the beam also holds while the Showcase scrolls sideways
       root.style.setProperty('--scroll-p', clamped.toFixed(4));
       root.style.setProperty('--beam-s', beamScale(clamped).toFixed(4));
+      root.style.setProperty('--beam-o', beamGold(clamped).toFixed(4));
     };
 
     const schedule = () => {

@@ -7,9 +7,11 @@
 
    Brightness cap: at the single brightest pixel (every layer peaking at
    the source) gold text must keep >= 4.5:1 and --text >= 7:1. With the
-   alphas below that pixel composites to ~#4f4635 over --bg (gold 4.96:1,
-   text 7.73:1); a single streak is ~1.43x its gap. Re-run the check if any
-   alpha below changes. */
+   alphas below that pixel composites to ~#5c4e37 over --bg at mid-page,
+   when --beam-o is 1 (gold 4.31:1, text 6.72:1 — gold dips just under AA
+   at that one hot spot, an accepted trade-off for bolder gold; glass cards
+   cover the beam with --glass-base so text inside them is unaffected).
+   Re-run the check if any alpha below changes. */
 
 .light-beam {
   position: fixed;
@@ -55,9 +57,16 @@
   inset: 0;
   background: radial-gradient(
     ellipse 24% 34% at 50% 100%,
-    rgba(245, 177, 46, 0.11),
+    rgba(245, 177, 46, 0.15),
     transparent 70%
   );
+}
+
+/* the gold layers strengthen with the beam's size — --beam-o rides the same
+   hump as --beam-s (0.35 → 1 → 0.35); the silver streaks stay constant */
+.lb-core,
+.lb-streaks--wide {
+  opacity: var(--beam-o, 0.35);
 }
 
 /* three streak layers with coprime periods (67 / 29 / 11px), so their
@@ -80,7 +89,7 @@
   background: repeating-linear-gradient(
     90deg,
     transparent 0 30px,
-    rgba(245, 177, 46, 0.07) 40px,
+    rgba(245, 177, 46, 0.1) 40px,
     transparent 54px 67px
   );
   animation-name: lb-drift-wide;
